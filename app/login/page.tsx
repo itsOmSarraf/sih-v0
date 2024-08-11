@@ -15,7 +15,7 @@ export default function LoginPage() {
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
-            This demo uses GitHub for authentication.
+            This demo uses Google for authentication.
           </CardDescription>
         </CardHeader>
         <CardFooter>
@@ -28,7 +28,7 @@ export default function LoginPage() {
             }}
             className="w-full"
           >
-            <Button className="w-full">Sign in with google</Button>
+            <Button className="w-full">Sign in with Google</Button>
           </form>
         </CardFooter>
       </Card>

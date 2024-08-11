@@ -6,32 +6,13 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { signIn } from '@/lib/auth';
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex justify-center items-start md:items-center p-8">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            This demo uses GitHub for authentication.
-          </CardDescription>
-        </CardHeader>
-        <CardFooter>
-          <form
-            action={async () => {
-              'use server';
-              await signIn('google', {
-                redirectTo: '/'
-              });
-            }}
-            className="w-full"
-          >
-            <Button className="w-full">Sign in with google</Button>
-          </form>
-        </CardFooter>
-      </Card>
-    </div>
+    <p> Dashboard</p>
+    // <div className="min-h-screen flex justify-center items-start md:items-center p-8">
+    // {/* <Card className="w-full max-w-sm"> */ }
+    // </Card >
+    // </div >
   );
 }
