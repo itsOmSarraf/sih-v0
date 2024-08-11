@@ -9,7 +9,7 @@ import {
 
 export default function LoginPage() {
   return (
-    <p> Dashboard</p>
+    <p>Home</p>
     // <div className="min-h-screen flex justify-center items-start md:items-center p-8">
     // {/* <Card className="w-full max-w-sm"> */ }
     // </Card >
