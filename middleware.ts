@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth';
 
-const protectedRoutes = ['/dashboard', '/onboard'];
+const protectedRoutes = ['/dashboard', '/onboard', '/'];
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
@@ -12,9 +12,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: [
-    '/dashboard',
-    '/onboard',
-    '/((?!api|_next/static|_next/image|favicon.ico).*)'
-  ]
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
 };
