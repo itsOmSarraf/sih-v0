@@ -1,9 +1,9 @@
 'use server';
 import { db } from '@/lib/db';
 import { NewSinger, singer } from '@/lib/schema';
-export async function onBoarding(
-  formData: FormData
-): Promise<{ success: boolean; message: string }> {
+import { redirect } from 'next/navigation';
+
+export async function onBoarding(formData: FormData) {
   console.log(formData);
 
   try {
@@ -32,22 +32,22 @@ export async function onBoarding(
     // Revalidate the path to update any cached data
     // revalidatePath('/profile');
 
-    return {
-      success: true,
-      message: `Profile for ${singerData.name} created successfully`
-    };
+    console.log(`Profile for ${singerData.name} created successfully`);
+    // redirect('/');
   } catch (error) {
     console.error('Onboarding error:', error);
-    return {
-      success: false,
-      message:
-        error instanceof Error ? error.message : 'An unknown error occurred'
-    };
+    // You might want to set an error message in a cookie or session here
+    // so it can be displayed after the redirect
   }
+
+  // Redirect happens regardless of success or failure
+  redirect('/');
 }
+
 function formatAddress(city: string, state: string, pincode: string): string {
   return `${city}, ${state} - ${pincode}`.trim();
 }
+
 async function onboardingDB(data: NewSinger) {
   try {
     const [newSinger] = await db.insert(singer).values(data).returning();
