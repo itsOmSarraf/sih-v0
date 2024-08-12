@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS "my_schema"."event" (
 	"venue" text,
 	"ticketLink" text,
 	"image" text,
-	"singer" text
+	"singer" integer
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "my_schema"."singer" (
@@ -34,9 +34,6 @@ CREATE TABLE IF NOT EXISTS "my_schema"."songReq" (
 	"rating" integer
 );
 --> statement-breakpoint
-DROP TABLE "event";--> statement-breakpoint
-DROP TABLE "singer";--> statement-breakpoint
-DROP TABLE "songReq";--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "my_schema"."event" ADD CONSTRAINT "event_singer_singer_id_fk" FOREIGN KEY ("singer") REFERENCES "my_schema"."singer"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION

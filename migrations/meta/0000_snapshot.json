@@ -1,16 +1,16 @@
 {
-  "id": "67a13232-204f-4416-baab-6d05750152b9",
+  "id": "2d9e85b4-77ac-4836-b35e-630949fa0e9e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.event": {
+    "my_schema.event": {
       "name": "event",
-      "schema": "",
+      "schema": "my_schema",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
@@ -58,7 +58,7 @@
         },
         "singer": {
           "name": "singer",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         }
@@ -69,6 +69,7 @@
           "name": "event_singer_singer_id_fk",
           "tableFrom": "event",
           "tableTo": "singer",
+          "schemaTo": "my_schema",
           "columnsFrom": [
             "singer"
           ],
@@ -82,9 +83,9 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.singer": {
+    "my_schema.singer": {
       "name": "singer",
-      "schema": "",
+      "schema": "my_schema",
       "columns": {
         "id": {
           "name": "id",
@@ -146,13 +147,19 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.songReq": {
+    "my_schema.songReq": {
       "name": "songReq",
-      "schema": "",
+      "schema": "my_schema",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "eventId": {
+          "name": "eventId",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -180,8 +187,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "ratting": {
-          "name": "ratting",
+        "rating": {
+          "name": "rating",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -189,12 +196,13 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "songReq_id_event_id_fk": {
-          "name": "songReq_id_event_id_fk",
+        "songReq_eventId_event_id_fk": {
+          "name": "songReq_eventId_event_id_fk",
           "tableFrom": "songReq",
           "tableTo": "event",
+          "schemaTo": "my_schema",
           "columnsFrom": [
-            "id"
+            "eventId"
           ],
           "columnsTo": [
             "id"
@@ -208,7 +216,10 @@
     }
   },
   "enums": {},
-  "schemas": {},
+  "schemas": {
+    "my_schema": "my_schema"
+  },
+  "sequences": {},
   "_meta": {
     "columns": {},
     "schemas": {},

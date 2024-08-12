@@ -33,7 +33,7 @@ const event = mySchema.table('event', {
   venue: text('venue'),
   ticketLink: text('ticketLink'),
   image: text('image'),
-  singer: text('singer').references(() => singer.id)
+  singer: integer('singer').references(() => singer.id)
 });
 
 const songReq = mySchema.table('songReq', {

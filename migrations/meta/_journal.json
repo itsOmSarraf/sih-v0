@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1723412357285,
-      "tag": "0000_lazy_spencer_smythe",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1723414273390,
-      "tag": "0001_special_thaddeus_ross",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1723414420293,
-      "tag": "0002_melodic_havok",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1723414492375,
-      "tag": "0003_sad_leech",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1723414610914,
-      "tag": "0004_soft_dakota_north",
+      "when": 1723444387314,
+      "tag": "0000_hesitant_micromax",
       "breakpoints": true
     }
   ]
