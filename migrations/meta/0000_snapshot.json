@@ -1,5 +1,5 @@
 {
-  "id": "2d9e85b4-77ac-4836-b35e-630949fa0e9e",
+  "id": "004e63a5-5bd3-4ddc-9dd6-330f79d98063",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -18,7 +18,7 @@
           "name": "name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "description": {
           "name": "description",
@@ -30,19 +30,19 @@
           "name": "eventDate",
           "type": "date",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "eventTime": {
           "name": "eventTime",
           "type": "time",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "venue": {
           "name": "venue",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "ticketLink": {
           "name": "ticketLink",
@@ -56,22 +56,36 @@
           "primaryKey": false,
           "notNull": false
         },
-        "singer": {
-          "name": "singer",
+        "singer_id": {
+          "name": "singer_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "event_singer_singer_id_fk": {
-          "name": "event_singer_singer_id_fk",
+        "event_singer_id_singer_id_fk": {
+          "name": "event_singer_id_singer_id_fk",
           "tableFrom": "event",
           "tableTo": "singer",
           "schemaTo": "my_schema",
           "columnsFrom": [
-            "singer"
+            "singer_id"
           ],
           "columnsTo": [
             "id"
@@ -97,11 +111,11 @@
           "name": "name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "gender": {
           "name": "gender",
-          "type": "char",
+          "type": "char(1)",
           "primaryKey": false,
           "notNull": false
         },
@@ -119,13 +133,13 @@
         },
         "address": {
           "name": "address",
-          "type": "varchar",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
         "contactNo": {
           "name": "contactNo",
-          "type": "varchar(10)",
+          "type": "varchar(15)",
           "primaryKey": false,
           "notNull": false
         },
@@ -140,15 +154,37 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "singer_email_unique": {
+          "name": "singer_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
     },
-    "my_schema.songReq": {
-      "name": "songReq",
+    "my_schema.song_request": {
+      "name": "song_request",
       "schema": "my_schema",
       "columns": {
         "id": {
@@ -157,26 +193,26 @@
           "primaryKey": true,
           "notNull": true
         },
-        "eventId": {
-          "name": "eventId",
+        "event_id": {
+          "name": "event_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "phone": {
           "name": "phone",
-          "type": "integer",
+          "type": "varchar(15)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "name": {
           "name": "name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "dedicatedTo": {
-          "name": "dedicatedTo",
+        "dedicated_to": {
+          "name": "dedicated_to",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -192,17 +228,38 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "songReq_eventId_event_id_fk": {
-          "name": "songReq_eventId_event_id_fk",
-          "tableFrom": "songReq",
+        "song_request_event_id_event_id_fk": {
+          "name": "song_request_event_id_event_id_fk",
+          "tableFrom": "song_request",
           "tableTo": "event",
           "schemaTo": "my_schema",
           "columnsFrom": [
-            "eventId"
+            "event_id"
           ],
           "columnsTo": [
             "id"

@@ -32,11 +32,11 @@ export default async function onboard() {
                         <div className="grid w-full items-center gap-4">
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="phoneNo">Phone Number</Label>
-                                <Input id="phoneNo" name="phoneNo" />
+                                <Input id="phoneNo" name="phoneNo" required />
                             </div>
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="gender">Gender</Label>
-                                <Select name="gender">
+                                <Select name="gender" required>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select gender" />
                                     </SelectTrigger>
@@ -49,23 +49,23 @@ export default async function onboard() {
                             </div>
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="age">Age</Label>
-                                <Input id="age" name="age" type="number" />
+                                <Input id="age" name="age" type="number" required />
                             </div>
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="city">City</Label>
-                                <Input id="city" name="city" />
+                                <Input id="city" name="city" required />
                             </div>
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="state">State</Label>
-                                <Input id="state" name="state" />
+                                <Input id="state" name="state" required />
                             </div>
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="pincode">Pincode</Label>
-                                <Input id="pincode" name="pincode" />
+                                <Input id="pincode" name="pincode" required />
                             </div>
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="upiId">UPI ID</Label>
-                                <Input id="upiId" name="upiId" />
+                                <Input id="upiId" name="upiId" required />
                             </div>
                         </div>
                     </CardContent>

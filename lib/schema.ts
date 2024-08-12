@@ -3,47 +3,96 @@ import {
   date,
   integer,
   pgSchema,
-  pgTable,
   serial,
   text,
   time,
-  varchar
+  varchar,
+  timestamp
 } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 export const mySchema = pgSchema('my_schema');
 
 const singer = mySchema.table('singer', {
   id: serial('id').primaryKey(),
-  name: text('name'),
-  gender: char('gender'),
+  name: text('name').notNull(),
+  gender: char('gender', { length: 1 }),
   age: integer('age'),
-  email: text('email'),
-  address: varchar('address'),
-  contactNo: varchar('contactNo', { length: 10 }),
+  email: text('email').unique(),
+  address: varchar('address', { length: 255 }),
+  contactNo: varchar('contactNo', { length: 15 }),
   pfp: text('pfp'),
-  upi_id: text('upi_id')
+  upi_id: text('upi_id'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
 const event = mySchema.table('event', {
   id: serial('id').primaryKey(),
-  name: text('name'),
+  name: text('name').notNull(),
   description: text('description'),
-  eventDate: date('eventDate'),
-  eventTime: time('eventTime'),
-  venue: text('venue'),
+  eventDate: date('eventDate').notNull(),
+  eventTime: time('eventTime').notNull(),
+  venue: text('venue').notNull(),
   ticketLink: text('ticketLink'),
   image: text('image'),
-  singer: integer('singer').references(() => singer.id)
+  singerId: integer('singer_id')
+    .references(() => singer.id)
+    .notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
-const songReq = mySchema.table('songReq', {
+const songRequest = mySchema.table('song_request', {
   id: serial('id').primaryKey(),
-  eventId: integer('eventId').references(() => event.id),
-  phoneNo: integer('phone'),
-  name: text('name'),
-  dedicated_To: text('dedicatedTo'),
+  eventId: integer('event_id')
+    .references(() => event.id)
+    .notNull(),
+  phoneNo: varchar('phone', { length: 15 }).notNull(),
+  name: text('name').notNull(),
+  dedicatedTo: text('dedicated_to'),
   payment: text('payment'),
-  rating: integer('rating')
+  rating: integer('rating'),
+  status: text('status').default('pending').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
-export { singer, event, songReq };
+// Define relations
+const singerRelations = relations(singer, ({ many }) => ({
+  events: many(event)
+}));
+
+const eventRelations = relations(event, ({ one, many }) => ({
+  singer: one(singer, {
+    fields: [event.singerId],
+    references: [singer.id]
+  }),
+  songRequests: many(songRequest)
+}));
+
+const songRequestRelations = relations(songRequest, ({ one }) => ({
+  event: one(event, {
+    fields: [songRequest.eventId],
+    references: [event.id]
+  })
+}));
+
+export {
+  singer,
+  event,
+  songRequest,
+  singerRelations,
+  eventRelations,
+  songRequestRelations
+};
+
+// Types for select and insert operations
+export type Singer = typeof singer.$inferSelect;
+export type NewSinger = typeof singer.$inferInsert;
+
+export type Event = typeof event.$inferSelect;
+export type NewEvent = typeof event.$inferInsert;
+
+export type SongRequest = typeof songRequest.$inferSelect;
+export type NewSongRequest = typeof songRequest.$inferInsert;
