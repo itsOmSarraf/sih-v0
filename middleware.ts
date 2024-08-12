@@ -1,13 +1,13 @@
 import { auth } from '@/lib/auth';
 
-const protectedRoutes = ['/dashboard', '/collection'];
+const protectedRoutes = ['/dashboard', '/'];
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const isProtectedRoute = protectedRoutes.includes(req.nextUrl.pathname);
 
   if (isProtectedRoute && !isLoggedIn) {
-    return Response.redirect(new URL('/api/auth/signin', req.url));
+    return Response.redirect(new URL('/login', req.url));
   }
 });
 
