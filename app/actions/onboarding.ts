@@ -2,10 +2,10 @@
 import { db } from '@/lib/db';
 import { NewSinger, singer } from '@/lib/schema';
 import { redirect } from 'next/navigation';
+import { eq } from 'drizzle-orm';
 
 export async function onBoarding(formData: FormData) {
-  console.log(formData);
-
+  // console.log(formData);
   try {
     // Extract data from FormData
     const singerData: NewSinger = {
@@ -24,24 +24,13 @@ export async function onBoarding(formData: FormData) {
       ),
       upi_id: formData.get('upiId') as string
     };
-
-    // Validate the data
-
-    // Insert data into the database
     const newSinger = await onboardingDB(singerData);
-    // Revalidate the path to update any cached data
-    // revalidatePath('/profile');
-
+    // console.log(singerData);
     console.log(`Profile for ${singerData.name} created successfully`);
-    // redirect('/');
   } catch (error) {
     console.error('Onboarding error:', error);
-    // You might want to set an error message in a cookie or session here
-    // so it can be displayed after the redirect
   }
-
-  // Redirect happens regardless of success or failure
-  redirect('/');
+  redirect('/profile');
 }
 
 function formatAddress(city: string, state: string, pincode: string): string {
