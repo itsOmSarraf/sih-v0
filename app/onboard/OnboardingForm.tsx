@@ -10,17 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { onBoarding } from 'app/actions/onboarding';
 
-interface OnboardingFormProps {
-    session: {
-        user?: {
-            email?: string;
-            image?: string;
-            name?: string;
-        };
-    };
-}
-
-export default function OnboardingForm({ session }: OnboardingFormProps) {
+export default function OnboardingForm({ session }: any) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
