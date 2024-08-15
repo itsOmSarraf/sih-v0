@@ -22,7 +22,8 @@ export async function onBoarding(formData: FormData) {
         formData.get('state') as string,
         formData.get('pincode') as string
       ),
-      upi_id: formData.get('upiId') as string
+      upi_id: formData.get('upiId') as string,
+      userName: formData.get('username') as string
     };
     const newSinger = await onboardingDB(singerData);
     // console.log(singerData);
@@ -30,7 +31,7 @@ export async function onBoarding(formData: FormData) {
   } catch (error) {
     console.error('Onboarding error:', error);
   }
-  redirect('/profile');
+  redirect('/');
 }
 
 function formatAddress(city: string, state: string, pincode: string): string {

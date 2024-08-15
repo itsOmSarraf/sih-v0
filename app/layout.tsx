@@ -1,3 +1,4 @@
+import Navbar from '@/components/Navbar';
 import './globals.css';
 export const metadata = {
   title: 'MusicReq',
@@ -12,7 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex min-h-screen w-full flex-col bg-black text-white">{children}</body>
+      <body className="flex h-screen w-full flex-col bg-gray-200 text-black">
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }

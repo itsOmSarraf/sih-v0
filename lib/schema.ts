@@ -23,6 +23,7 @@ const singer = mySchema.table('singer', {
   contactNo: varchar('contactNo', { length: 15 }),
   pfp: text('pfp'),
   upi_id: text('upi_id'),
+  userName: text('username').unique(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });

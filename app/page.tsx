@@ -1,5 +1,5 @@
 export default function Home() {
   return (
-    <p>Home</p>
+    <div className="w-full items-center text-center">Home Page</div>
   )
 }
