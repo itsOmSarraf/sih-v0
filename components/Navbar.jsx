@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
@@ -11,6 +12,7 @@ import {
   SheetTrigger
 } from '@/components/ui/sheet';
 import { APP_NAME } from '@/lib/constants';
+import handleLogout from '@/lib/signout';
 export default function NavBar() {
   return (
     <nav className="flex justify-between text-primary items-center p-4 bg-white">
@@ -26,8 +28,9 @@ export default function NavBar() {
             <SheetTitle>Menu</SheetTitle>
             <SheetDescription>Navigate through our site</SheetDescription>
           </SheetHeader>
-          {/* <div className="mt-4">
-            <ul className="space-y-2">
+          <div className="mt-4">
+            <Button onClick={handleLogout}>Logout</Button>
+            {/* <ul className="space-y-2">
               <li>
                 <Link href="#" className="block p-2 hover:bg-gray-200 rounded">
                   Home
@@ -48,8 +51,8 @@ export default function NavBar() {
                   Contact
                 </Link>
               </li>
-            </ul>
-          </div> */}
+            </ul> */}
+          </div>
         </SheetContent>
       </Sheet>
     </nav>

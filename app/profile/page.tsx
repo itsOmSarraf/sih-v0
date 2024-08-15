@@ -5,6 +5,7 @@ import { ProfileData } from 'app/actions/profile';
 import { Button } from '@/components/ui/button';
 import { CirclePlus } from 'lucide-react';
 
+
 export default async function Profile() {
     const users = await ProfileData();
     const user = users[0]; // Assuming we want the first user in the array
