@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ProfileData } from 'app/actions/profile';
 import { Button } from '@/components/ui/button';
 import { CirclePlus } from 'lucide-react';
-import ConcertBookingForm from '@/components/eventForm';
 
 export default async function Profile() {
     const users = await ProfileData();

@@ -23,7 +23,7 @@ export default function LoginPage() {
             action={async () => {
               'use server';
               await signIn('google', {
-                redirectTo: '/onboard'
+                redirectTo: '/checking'
               });
             }}
             className="w-full"
