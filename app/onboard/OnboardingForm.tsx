@@ -6,7 +6,7 @@ import { Card, CardHeader, CardContent, CardFooter, CardTitle } from '@/componen
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Button } from '@/components/ui/button';
 import { onBoarding } from 'app/actions/onboarding';
 
@@ -65,29 +65,32 @@ export default function OnboardingForm({ session }: any) {
                                 <Label htmlFor="upiId">UPI ID</Label>
                                 <Input id="upiId" name="upiId" required />
                             </div>
-                            <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="phoneNo">Phone Number</Label>
-                                <Input id="phoneNo" name="phoneNo" required minLength={10} maxLength={10} />
-                            </div>
-                            <div className='flex justify-between gap-2'>
-                                <div className="flex flex-col space-y-1.5 w-2/3 ">
-                                    <Label htmlFor="gender">Gender</Label>
-                                    <Select name="gender" required>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select gender" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="male">Male</SelectItem>
-                                            <SelectItem value="female">Female</SelectItem>
-                                            <SelectItem value="other">Other</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                            <div className='flex w-full justify-between gap-2'>
+                                <div className="flex flex-col space-y-1.5 w-2/3">
+                                    <Label htmlFor="phoneNo">Phone Number</Label>
+                                    <Input id="phoneNo" name="phoneNo" required minLength={10} maxLength={10} />
                                 </div>
                                 <div className="w-1/3 flex flex-col space-y-1.5">
                                     <Label htmlFor="age">Age</Label>
                                     <Input id="age" name="age" type="number" required />
                                 </div>
                             </div>
+                            <Label htmlFor="gender">Gender</Label>
+                            <RadioGroup defaultValue="male" name="gender" required className="flex space-x-4">
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="male" id="male" />
+                                    <Label htmlFor="male">Male</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="female" id="female" />
+                                    <Label htmlFor="female">Female</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="other" id="other" />
+                                    <Label htmlFor="other">Other</Label>
+                                </div>
+                            </RadioGroup>
+
                             <div className='flex gap-2'>
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="city">City</Label>
