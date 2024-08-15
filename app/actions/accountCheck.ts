@@ -21,9 +21,8 @@ export async function checkUserAndRedirect() {
     .from(singer)
     .where(eq(singer.email, email))
     .limit(1);
-
   if (existingSinger.length > 0) {
-    redirect('/profile'); // User exists, redirect to profile
+    redirect(`/profile/${existingSinger[0].userName}`); // User exists, redirect to their profile
   } else {
     redirect('/onboard'); // User doesn't exist, redirect to onboarding
   }
