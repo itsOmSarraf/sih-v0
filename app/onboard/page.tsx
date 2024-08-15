@@ -8,9 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { auth } from '@/lib/auth';
 import { onBoarding } from 'app/actions/onboarding';
-import { db } from '@/lib/db';
-import { singer } from '@/lib/schema';
-import { eq } from 'drizzle-orm';
 
 export default async function OnboardingPage() {
     const session = await auth();
@@ -52,7 +49,7 @@ export default async function OnboardingPage() {
                             </div>
                             <div className="flex flex-col space-y-1.5">
                                 <Label htmlFor="phoneNo">Phone Number</Label>
-                                <Input id="phoneNo" name="phoneNo" required />
+                                <Input id="phoneNo" name="phoneNo" required minLength={10} maxLength={10} />
                             </div>
                             <div className='flex justify-between gap-2'>
                                 <div className="flex flex-col space-y-1.5 w-2/3 ">
@@ -84,7 +81,7 @@ export default async function OnboardingPage() {
                                 </div>
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="pincode">Pincode</Label>
-                                    <Input id="pincode" name="pincode" required />
+                                    <Input id="pincode" name="pincode" required minLength={6} maxLength={6} />
                                 </div>
                             </div>
                         </div>

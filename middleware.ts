@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth';
 
-const protectedRoutes = ['/dashboard', '/onboard', '/', '/profile'];
+const protectedRoutes = ['/dashboard', '/onboard', '/'];
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
