@@ -7,14 +7,15 @@ import {
   text,
   time,
   varchar,
-  timestamp
+  timestamp,
+  primaryKey
 } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 
 export const mySchema = pgSchema('my_schema');
 
 const singer = mySchema.table('singer', {
-  id: serial('id').primaryKey(),
+  userName: text('username').primaryKey(),
   name: text('name').notNull(),
   gender: char('gender', { length: 1 }),
   age: integer('age'),
@@ -23,32 +24,39 @@ const singer = mySchema.table('singer', {
   contactNo: varchar('contactNo', { length: 15 }),
   pfp: text('pfp'),
   upi_id: text('upi_id'),
-  userName: text('username').unique(),
+  eventCount: integer('event_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
-const event = mySchema.table('event', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  description: text('description'),
-  eventDate: date('eventDate').notNull(),
-  eventTime: time('eventTime').notNull(),
-  venue: text('venue').notNull(),
-  ticketLink: text('ticketLink'),
-  image: text('image'),
-  singerId: integer('singer_id')
-    .references(() => singer.id)
-    .notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull()
-});
+const event = mySchema.table(
+  'event',
+  {
+    singerUserName: text('singer_username')
+      .notNull()
+      .references(() => singer.userName),
+    eventNumber: integer('event_number').notNull(),
+    name: text('name').notNull(),
+    description: text('description'),
+    eventDate: date('eventDate').notNull(),
+    eventTime: time('eventTime').notNull(),
+    venue: text('venue').notNull(),
+    ticketLink: text('ticketLink'),
+    image: text('image'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
+  },
+  (table) => {
+    return {
+      compositePk: primaryKey(table.singerUserName, table.eventNumber)
+    };
+  }
+);
 
 const songRequest = mySchema.table('song_request', {
   id: serial('id').primaryKey(),
-  eventId: integer('event_id')
-    .references(() => event.id)
-    .notNull(),
+  singerUserName: text('singer_username').notNull(),
+  eventNumber: integer('event_number').notNull(),
   phoneNo: varchar('phone', { length: 15 }).notNull(),
   name: text('name').notNull(),
   dedicatedTo: text('dedicated_to'),
@@ -66,18 +74,54 @@ const singerRelations = relations(singer, ({ many }) => ({
 
 const eventRelations = relations(event, ({ one, many }) => ({
   singer: one(singer, {
-    fields: [event.singerId],
-    references: [singer.id]
+    fields: [event.singerUserName],
+    references: [singer.userName]
   }),
   songRequests: many(songRequest)
 }));
 
 const songRequestRelations = relations(songRequest, ({ one }) => ({
   event: one(event, {
-    fields: [songRequest.eventId],
-    references: [event.id]
+    fields: [songRequest.singerUserName, songRequest.eventNumber],
+    references: [event.singerUserName, event.eventNumber]
   })
 }));
+
+// Function to get the next event number for a singer
+export async function getNextEventNumber(db: any, singerUserName: string) {
+  const result = await db.transaction(async (tx: any) => {
+    // Increment the event count and get the new value
+    await tx
+      .update(singer)
+      .set({ eventCount: sql`${singer.eventCount} + 1` })
+      .where(sql`${singer.userName} = ${singerUserName}`);
+
+    const updatedSinger = await tx
+      .select({ eventCount: singer.eventCount })
+      .from(singer)
+      .where(sql`${singer.userName} = ${singerUserName}`)
+      .limit(1);
+
+    return updatedSinger[0].eventCount;
+  });
+
+  return result;
+}
+
+// Function to create a new event
+export async function createEvent(db: any, newEvent: NewEvent) {
+  const nextEventNumber = await getNextEventNumber(db, newEvent.singerUserName);
+
+  const createdEvent = await db
+    .insert(event)
+    .values({
+      ...newEvent,
+      eventNumber: nextEventNumber
+    })
+    .returning();
+
+  return createdEvent[0];
+}
 
 export {
   singer,

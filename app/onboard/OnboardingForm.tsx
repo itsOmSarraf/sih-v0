@@ -68,7 +68,7 @@ export default function OnboardingForm({ session }: any) {
                             <div className='flex w-full justify-between gap-2'>
                                 <div className="flex flex-col space-y-1.5 w-2/3">
                                     <Label htmlFor="phoneNo">Phone Number</Label>
-                                    <Input id="phoneNo" name="phoneNo" required minLength={10} maxLength={10} />
+                                    <Input id="phoneNo" name="phoneNo" type='number' required minLength={10} maxLength={10} />
                                 </div>
                                 <div className="w-1/3 flex flex-col space-y-1.5">
                                     <Label htmlFor="age">Age</Label>
