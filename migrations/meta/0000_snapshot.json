@@ -1,5 +1,5 @@
 {
-  "id": "004e63a5-5bd3-4ddc-9dd6-330f79d98063",
+  "id": "052f040c-4664-4aab-b6f9-cafc0953add2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -8,10 +8,16 @@
       "name": "event",
       "schema": "my_schema",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
+        "singer_username": {
+          "name": "singer_username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_number": {
+          "name": "event_number",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true
         },
         "name": {
@@ -56,12 +62,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "singer_id": {
-          "name": "singer_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -79,31 +79,39 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "event_singer_id_singer_id_fk": {
-          "name": "event_singer_id_singer_id_fk",
+        "event_singer_username_singer_username_fk": {
+          "name": "event_singer_username_singer_username_fk",
           "tableFrom": "event",
           "tableTo": "singer",
           "schemaTo": "my_schema",
           "columnsFrom": [
-            "singer_id"
+            "singer_username"
           ],
           "columnsTo": [
-            "id"
+            "username"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "event_singer_username_event_number_pk": {
+          "name": "event_singer_username_event_number_pk",
+          "columns": [
+            "singer_username",
+            "event_number"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
     "my_schema.singer": {
       "name": "singer",
       "schema": "my_schema",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
+        "username": {
+          "name": "username",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
@@ -155,6 +163,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "event_count": {
+          "name": "event_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -193,8 +208,14 @@
           "primaryKey": true,
           "notNull": true
         },
-        "event_id": {
-          "name": "event_id",
+        "singer_username": {
+          "name": "singer_username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_number": {
+          "name": "event_number",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -252,22 +273,7 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "song_request_event_id_event_id_fk": {
-          "name": "song_request_event_id_event_id_fk",
-          "tableFrom": "song_request",
-          "tableTo": "event",
-          "schemaTo": "my_schema",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     }
