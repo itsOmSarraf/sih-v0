@@ -11,7 +11,7 @@ export async function ProfileData() {
     .select()
     .from(singer)
     .where(eq(singer.email, email));
-  return profileData;
+  return profileData[0];
 }
 
 export async function ProfileDataByUsername(username: string) {
@@ -20,7 +20,6 @@ export async function ProfileDataByUsername(username: string) {
       .select()
       .from(singer)
       .where(eq(singer.userName, username));
-
     if (profileData.length === 0) {
       return null; // Return null if no user is found
     }

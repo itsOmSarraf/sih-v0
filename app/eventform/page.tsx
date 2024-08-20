@@ -1,5 +1,5 @@
 
-import ConcertBookingForm from "@/components/eventForm";
+import ConcertBookingForm from "@/components/ConcertBookingWrapper";
 
 export default function event() {
     return (

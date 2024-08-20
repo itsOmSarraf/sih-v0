@@ -22,8 +22,8 @@ const singer = mySchema.table('singer', {
   email: text('email').unique(),
   address: varchar('address', { length: 255 }),
   contactNo: varchar('contactNo', { length: 15 }),
-  pfp: text('pfp'),
-  upi_id: text('upi_id'),
+  pfp: text('pfp').notNull(),
+  upi_id: text('upi_id').notNull(),
   eventCount: integer('event_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()

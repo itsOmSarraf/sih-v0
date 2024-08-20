@@ -1,7 +1,6 @@
 'use server';
 import { db } from '@/lib/db';
 import { NewSinger, singer } from '@/lib/schema';
-import { redirect } from 'next/navigation';
 
 export async function onBoarding(formData: FormData) {
   try {
