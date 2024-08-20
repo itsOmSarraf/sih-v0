@@ -86,43 +86,6 @@ const songRequestRelations = relations(songRequest, ({ one }) => ({
     references: [event.singerUserName, event.eventNumber]
   })
 }));
-
-// Function to get the next event number for a singer
-export async function getNextEventNumber(db: any, singerUserName: string) {
-  const result = await db.transaction(async (tx: any) => {
-    // Increment the event count and get the new value
-    await tx
-      .update(singer)
-      .set({ eventCount: sql`${singer.eventCount} + 1` })
-      .where(sql`${singer.userName} = ${singerUserName}`);
-
-    const updatedSinger = await tx
-      .select({ eventCount: singer.eventCount })
-      .from(singer)
-      .where(sql`${singer.userName} = ${singerUserName}`)
-      .limit(1);
-
-    return updatedSinger[0].eventCount;
-  });
-
-  return result;
-}
-
-// Function to create a new event
-export async function createEvent(db: any, newEvent: NewEvent) {
-  const nextEventNumber = await getNextEventNumber(db, newEvent.singerUserName);
-
-  const createdEvent = await db
-    .insert(event)
-    .values({
-      ...newEvent,
-      eventNumber: nextEventNumber
-    })
-    .returning();
-
-  return createdEvent[0];
-}
-
 export {
   singer,
   event,

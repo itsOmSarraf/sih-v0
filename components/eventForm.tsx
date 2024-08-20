@@ -1,21 +1,11 @@
-'use client';
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { eventSubmit } from '../app/actions/eventSubmit'; // Import the server action
 
 interface Profile {
     name: string;
@@ -28,8 +18,6 @@ interface ConcertBookingFormProps {
 }
 
 export default function ConcertBookingForm({ profile }: ConcertBookingFormProps) {
-    const [date, setDate] = React.useState<Date | undefined>();
-
     return (
         <div className='w-full flex justify-center'>
             <Card className="w-[450px]">
@@ -44,64 +32,43 @@ export default function ConcertBookingForm({ profile }: ConcertBookingFormProps)
                     <p className="text-sm text-muted-foreground">@{profile.userName}</p>
                 </CardHeader>
                 <CardContent>
-                    <form className="space-y-4">
+                    <form action={eventSubmit} className="space-y-4">
+                        <input type="hidden" name="singerUserName" value={profile.userName} />
+
                         <div className="space-y-2">
-                            <Label htmlFor="event-name">Event Name</Label>
-                            <Input id="event-name" placeholder="Enter event name" />
+                            <Label htmlFor="name">Event Name</Label>
+                            <Input id="name" name="name" placeholder="Enter event name" required />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="event-description">Description</Label>
-                            <Textarea id="event-description" placeholder="Describe your event" />
+                            <Label htmlFor="description">Description</Label>
+                            <Textarea id="description" name="description" placeholder="Describe your event" />
                         </div>
 
-                        <div className="space-y-2">
-                            <Label>Event Date</Label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant={"outline"}
-                                        className={cn(
-                                            "w-full justify-start text-left font-normal",
-                                            !date && "text-muted-foreground"
-                                        )}
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {date ? format(date, "PPP") : <span>Pick a date</span>}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0">
-                                    <Calendar
-                                        mode="single"
-                                        selected={date}
-                                        onSelect={setDate}
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="event-time">Event Time</Label>
-                            <div className="flex items-center">
-                                <Clock className="mr-2 h-4 w-4" />
-                                <Input id="event-time" type="time" />
+                        <div className='flex justify-between space-x-2'>
+                            <div className="space-y-2 w-full">
+                                <Label htmlFor="eventDate">Event Date</Label>
+                                <Input id='eventDate' name="eventDate" type='date' required />
+                            </div>
+                            <div className="space-y-2 w-full">
+                                <Label htmlFor="eventTime">Event Time</Label>
+                                <Input id="eventTime" name="eventTime" type="time" required />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="event-venue">Venue</Label>
-                            <Input id="event-venue" placeholder="Enter venue" />
+                            <Label htmlFor="venue">Venue</Label>
+                            <Input id="venue" name="venue" placeholder="Enter venue" required />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="ticket-link">Ticket Link</Label>
-                            <Input id="ticket-link" placeholder="Enter ticket link" />
+                            <Label htmlFor="ticketLink">Ticket Link</Label>
+                            <Input id="ticketLink" name="ticketLink" placeholder="Enter ticket link" />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="event-image">Event Image URL</Label>
-                            <Input id="event-image" placeholder="Enter image URL" />
+                            <Label htmlFor="image">Event Image URL</Label>
+                            <Input id="image" name="image" placeholder="Enter image URL" />
                         </div>
 
                         <Button type="submit" className="w-full">Create Event</Button>
