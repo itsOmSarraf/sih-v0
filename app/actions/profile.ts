@@ -14,6 +14,19 @@ export async function ProfileData() {
   return profileData[0];
 }
 
+export async function AuthUsername(username: string) {
+  const user = await ProfileData();
+  if (user) {
+    if ((user.userName = username)) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
 export async function ProfileDataByUsername(username: string) {
   try {
     const profileData = await db

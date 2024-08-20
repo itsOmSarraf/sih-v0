@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { CirclePlus } from 'lucide-react';
 import SingerEventsPreview from './eventList';
 import { Singer } from '@/lib/schema';
-
+import { AuthUsername } from 'app/actions/profile';
 export default async function ProfileClient({ user }: { user: Singer | null }) {
     if (!user) {
         return (
@@ -45,9 +45,13 @@ export default async function ProfileClient({ user }: { user: Singer | null }) {
                         </div>
                     </CardContent>
                     <div className="px-6 pb-6">
-                        <Button className="w-full">
-                            Add Event <CirclePlus className="ml-2" />
-                        </Button>
+                        {
+                            await AuthUsername(user.userName) ? (
+                                <Button className="w-full">
+                                    Add Event <CirclePlus className="ml-2" />
+                                </Button>
+                            ) : (<></>)
+                        }
                     </div>
                 </Card>
             </div>
