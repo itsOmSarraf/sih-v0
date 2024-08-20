@@ -46,11 +46,11 @@ const event = mySchema.table(
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
-  (table) => {
-    return {
-      compositePk: primaryKey(table.singerUserName, table.eventNumber)
-    };
-  }
+  (table) => ({
+    compositePk: primaryKey({
+      columns: [table.singerUserName, table.eventNumber]
+    })
+  })
 );
 
 const songRequest = mySchema.table('song_request', {
