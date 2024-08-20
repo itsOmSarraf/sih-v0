@@ -29,7 +29,7 @@ export default function OnboardingForm({ session }: any) {
         setIsSubmitting(false);
 
         if (result.success) {
-            router.push(`/profile/${result.userName}`);
+            router.push(`/singer/${result.userName}`);
         } else {
             setError(result.error || 'An unexpected error occurred');
         }

@@ -1,4 +1,4 @@
-// File: ProfileClient.tsx
+'use client'
 import React from 'react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -7,7 +7,9 @@ import { CirclePlus } from 'lucide-react';
 import SingerEventsPreview from './eventList';
 import { Singer } from '@/lib/schema';
 import { AuthUsername } from 'app/actions/profile';
+import { useRouter } from 'next/navigation';
 export default async function ProfileClient({ user }: { user: Singer | null }) {
+    const router = useRouter();
     if (!user) {
         return (
             <div className="flex items-center justify-center h-full bg-gray-100">
@@ -47,7 +49,7 @@ export default async function ProfileClient({ user }: { user: Singer | null }) {
                     <div className="px-6 pb-6">
                         {
                             await AuthUsername(user.userName) ? (
-                                <Button className="w-full">
+                                <Button className="w-full" onClick={() => router.push('/eventform')}>
                                     Add Event <CirclePlus className="ml-2" />
                                 </Button>
                             ) : (<></>)

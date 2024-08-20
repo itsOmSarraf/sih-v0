@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -6,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { eventSubmit } from '../app/actions/eventSubmit'; // Import the server action
-
+import { useRouter } from 'next/navigation';
 interface Profile {
     name: string;
     userName: string;
@@ -18,6 +19,7 @@ interface ConcertBookingFormProps {
 }
 
 export default function ConcertBookingForm({ profile }: ConcertBookingFormProps) {
+    const router = useRouter();
     return (
         <div className='w-full flex justify-center'>
             <Card className="w-[450px]">
@@ -71,7 +73,11 @@ export default function ConcertBookingForm({ profile }: ConcertBookingFormProps)
                             <Input id="image" name="image" placeholder="Enter image URL" />
                         </div>
 
-                        <Button type="submit" className="w-full">Create Event</Button>
+                        <Button type="submit" className="w-full"
+                            onClick={
+                                () => router.push(`singer/${profile.userName}`)
+                            }
+                        >Create Event</Button>
                     </form>
                 </CardContent>
             </Card>
