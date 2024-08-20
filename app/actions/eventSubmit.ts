@@ -5,7 +5,8 @@ import { revalidatePath } from 'next/cache';
 import { ProfileDataByUsername } from './profile';
 import { eq } from 'drizzle-orm';
 
-async function getNextEventNumber(db: any, singerUserName: string) {
+// Updated function to get the next event number without using a transaction
+export async function getNextEventNumber(db: any, singerUserName: string) {
   const currentSinger = await db
     .select({ eventCount: singer.eventCount })
     .from(singer)
@@ -24,15 +25,6 @@ async function getNextEventNumber(db: any, singerUserName: string) {
     .where(eq(singer.userName, singerUserName));
 
   return nextEventNumber;
-}
-async function createEvent(db: any, newEvent: NewEvent) {
-  const createdEvent = await db
-    .insert(event)
-    .values({
-      ...newEvent
-    })
-    .returning();
-  return createdEvent;
 }
 export async function eventSubmit(formData: FormData) {
   try {
@@ -56,8 +48,11 @@ export async function eventSubmit(formData: FormData) {
       ticketLink: (formData.get('ticketLink') as string) || null,
       image: (formData.get('image') as string) || null
     };
+
+    // Create the new event using the createEvent function from the schema
     const createdEvent = await db.insert(event).values(newEvent).returning();
 
+    // Revalidate the path to update the UI
     revalidatePath(`/singers/${singerUserName}`);
 
     return { success: true, event: createdEvent[0] };
