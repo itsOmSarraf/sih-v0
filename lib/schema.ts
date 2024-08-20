@@ -87,18 +87,6 @@ const songRequestRelations = relations(songRequest, ({ one }) => ({
   })
 }));
 
-// Function to create a new event
-export async function createEvent(db: any, newEvent: NewEvent) {
-  const createdEvent = await db
-    .insert(event)
-    .values({
-      ...newEvent
-    })
-    .returning();
-
-  return createdEvent;
-}
-
 export {
   singer,
   event,
