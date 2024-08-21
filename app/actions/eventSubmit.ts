@@ -5,8 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { ProfileDataByUsername } from './profile';
 import { eq } from 'drizzle-orm';
 
-// Updated function to get the next event number without using a transaction
-export async function getNextEventNumber(db: any, singerUserName: string) {
+async function getNextEventNumber(db: any, singerUserName: string) {
   const currentSinger = await db
     .select({ eventCount: singer.eventCount })
     .from(singer)
@@ -26,13 +25,14 @@ export async function getNextEventNumber(db: any, singerUserName: string) {
 
   return nextEventNumber;
 }
-export async function eventSubmit(formData: FormData) {
+
+export async function eventSubmit(prevState: any, formData: FormData) {
   try {
     const singerUserName = formData.get('singerUserName') as string;
     const existingSinger = await ProfileDataByUsername(singerUserName);
 
     if (!existingSinger) {
-      throw new Error('Singer not found');
+      return { message: 'Singer not found', errors: {}, success: false };
     }
 
     const eventNumber = await getNextEventNumber(db, singerUserName);
@@ -49,15 +49,21 @@ export async function eventSubmit(formData: FormData) {
       image: (formData.get('image') as string) || null
     };
 
-    // Create the new event using the createEvent function from the schema
     const createdEvent = await db.insert(event).values(newEvent).returning();
 
-    // Revalidate the path to update the UI
-    revalidatePath(`/singers/${singerUserName}`);
+    revalidatePath(`/singer/${singerUserName}`);
 
-    return { success: true, event: createdEvent[0] };
+    return {
+      message: 'Event created successfully!',
+      errors: {},
+      success: true
+    };
   } catch (error) {
     console.error('Error creating event:', error);
-    return { success: false, error: (error as Error).message };
+    return {
+      message: 'Failed to create event. Please try again.',
+      errors: { error: (error as Error).message },
+      success: false
+    };
   }
 }
