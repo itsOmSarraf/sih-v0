@@ -1,5 +1,5 @@
 {
-  "id": "052f040c-4664-4aab-b6f9-cafc0953add2",
+  "id": "02810f48-2467-4033-918d-1c73481f8fca",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -155,13 +155,13 @@
           "name": "pfp",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "upi_id": {
           "name": "upi_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "event_count": {
           "name": "event_count",

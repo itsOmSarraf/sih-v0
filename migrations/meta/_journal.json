@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1723991326697,
-      "tag": "0000_odd_proemial_gods",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1724171101722,
-      "tag": "0001_medical_lockheed",
+      "when": 1724357100340,
+      "tag": "0000_public_pandemic",
       "breakpoints": true
     }
   ]
