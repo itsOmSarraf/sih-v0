@@ -1,3 +1,4 @@
+'use server'
 import { ProfileDataByUsername } from 'app/actions/profile';
 import ProfileClient from './ProfileClient';
 
