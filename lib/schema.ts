@@ -10,7 +10,7 @@ import {
   timestamp,
   primaryKey
 } from 'drizzle-orm/pg-core';
-import { relations, sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 
 export const mySchema = pgSchema('my_schema');
 
@@ -53,6 +53,12 @@ const event = mySchema.table(
   })
 );
 
+const songAdd = mySchema.table('songs', {
+  id: serial('id').primaryKey(),
+  songName: text('songName').notNull(),
+  artistName: text('artistName').notNull()
+});
+
 const songRequest = mySchema.table('song_request', {
   id: serial('id').primaryKey(),
   singerUserName: text('singer_username').notNull(),
@@ -93,7 +99,8 @@ export {
   songRequest,
   singerRelations,
   eventRelations,
-  songRequestRelations
+  songRequestRelations,
+  songAdd
 };
 
 // Types for select and insert operations
@@ -105,3 +112,6 @@ export type NewEvent = typeof event.$inferInsert;
 
 export type SongRequest = typeof songRequest.$inferSelect;
 export type NewSongRequest = typeof songRequest.$inferInsert;
+
+export type Songs = typeof songRequest.$inferSelect;
+export type SongsAdd = typeof songRequest.$inferInsert;
