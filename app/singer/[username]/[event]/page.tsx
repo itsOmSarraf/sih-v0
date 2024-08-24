@@ -1,12 +1,12 @@
+'use server'
 import React from 'react';
-import { use } from 'react';
 import eventDetails from 'app/actions/eventNumber';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, MapPin, Ticket } from 'lucide-react';
 
-export default function EventPage({ params }: { params: { username: string; event: number } }) {
-    const eventData = use(eventDetails({ username: params.username, eventNo: params.event }));
+export default async function EventPage({ params }: { params: { username: string; event: number } }) {
+    const eventData = await eventDetails({ username: params.username, eventNo: params.event });
 
     if (!eventData) {
         return (
