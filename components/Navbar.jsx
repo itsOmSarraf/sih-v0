@@ -1,4 +1,3 @@
-'use server';
 import React from 'react';
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
