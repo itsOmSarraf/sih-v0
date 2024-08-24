@@ -3,12 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { signIn } from '@/lib/auth';
+import { auth, signIn } from '@/lib/auth';
 
-export default function AddSong() {
+export default async function AddSong() {
+    const session = await auth();
+    const spotifyAuth = session?.user;
+    console.log(spotifyAuth)
+    // console.log()
     return (
         <div className='flex w-full justify-center items-center h-full'>
             <Card className="w-[350px]">
+
                 <form
                     action={async () => {
                         'use server';
@@ -18,8 +23,9 @@ export default function AddSong() {
                     }}
                     className="w-full"
                 >
-                    <Button className="w-full">Connect Spotify</Button>
+                    <Button className="w-full bg-[#1DB954]">Connect Spotify</Button>
                 </form>
+
                 <CardHeader>
                     <CardTitle>Add New Song</CardTitle>
                 </CardHeader>
