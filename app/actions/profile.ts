@@ -6,25 +6,23 @@ import { eq } from 'drizzle-orm';
 
 export async function ProfileData() {
   const session = await auth();
-  const email = session?.user?.email || '';
+  const email = session?.user?.email;
+
+  if (!email) {
+    return null; // Return null if no session or email
+  }
+
   const profileData = await db
     .select()
     .from(singer)
     .where(eq(singer.email, email));
-  return profileData[0];
+
+  return profileData[0] || null; // Return null if no user found
 }
 
 export async function AuthUsername(username: string) {
   const user = await ProfileData();
-  if (user) {
-    if ((user.userName = username)) {
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    return false;
-  }
+  return user?.userName === username;
 }
 
 export async function ProfileDataByUsername(username: string) {
@@ -33,11 +31,8 @@ export async function ProfileDataByUsername(username: string) {
       .select()
       .from(singer)
       .where(eq(singer.userName, username));
-    if (profileData.length === 0) {
-      return null; // Return null if no user is found
-    }
 
-    return profileData[0]; // Return the first (and should be only) user
+    return profileData[0] || null; // Return null if no user is found
   } catch (error) {
     console.error('Error fetching profile data:', error);
     throw new Error('Failed to fetch profile data');

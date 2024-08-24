@@ -16,8 +16,25 @@ import handleLogout from '@/lib/signout';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { ProfileData } from 'app/actions/profile';
 
-export default async function NavBar() {
-  const profileData = await ProfileData();
+export default function NavBar() {
+  const [profileData, setProfileData] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const data = await ProfileData();
+        setProfileData(data);
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
   const isLoggedIn = profileData && profileData.userName && profileData.name;
 
   return (
