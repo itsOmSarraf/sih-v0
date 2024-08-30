@@ -1,15 +1,64 @@
 'use client';
-import React, { useState } from 'react';
-import { Send } from 'lucide-react';
+import React, { useState, useRef, Component } from 'react';
+import { Send, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { multiLang } from '../../lib/constants';
-import { availableDepartments } from '../../lib/constants';
+import { multiLang, availableDepartments } from '../../lib/constants';
 import { motion } from 'framer-motion';
 import { NewComplaint } from 'app/actions/newComplaint';
+
+// Ensure this is set in your environment variables
+const API_KEY = process.env.NEXT_PUBLIC_APIKEY;
+const genAI = new GoogleGenerativeAI(API_KEY);
+
+// Error Boundary Component
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <div>Something went wrong.</div>;
+    }
+
+    return this.props.children;
+  }
+}
+
+const TypingAnimation = ({ content }) => {
+  if (typeof content !== 'string' || content.trim() === '') {
+    return null;
+  }
+
+  const words = content.split(' ');
+
+  return (
+    <div className="typing-animation">
+      {words.map((word, index) => (
+        <motion.span
+          key={index}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 0.25,
+            delay: index * 0.1
+          }}
+        >
+          {word}{' '}
+        </motion.span>
+      ))}
+    </div>
+  );
+};
 
 export default function ChatInterface() {
   const [input, setInput] = useState('');
@@ -25,15 +74,26 @@ export default function ChatInterface() {
   const [jsonSent, setJsonSent] = useState(false);
   const [jsonGenerated, setJsonGenerated] = useState(false);
   const [UUID, setUUID] = useState('');
+  const [image, setImage] = useState(null);
+  const [imageBase64, setImageBase64] = useState(null);
+  const fileInputRef = useRef(null);
 
-  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_APIKEY);
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const handleImageUpload = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setImage(file);
 
-  const sendJsonToBackend = (jsonData) => {
-    console.log('Sending JSON to backend:', jsonData);
+      // Convert image to base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result.split(',')[1];
+        setImageBase64(base64String);
+      };
+      reader.readAsDataURL(file);
 
-    NewComplaint(jsonData);
-    // Implement actual backend sending logic here
+      addModelResponse(multiLang[language].imageUploaded);
+      setGeminiEnabled(true);
+    }
   };
 
   const handleSubmit = async () => {
@@ -46,10 +106,10 @@ export default function ChatInterface() {
     if (!pnrVerified) {
       setTimeout(() => {
         if (input.trim().toLowerCase() === 'abc123') {
-          addModelResponse(multiLang[language].introQuestion);
+          addModelResponse(multiLang[language].categorySelectionPrompt);
           setPnrVerified(true);
-          setShowOptions(true);
           setPnr(input.trim());
+          setShowOptions(true);
         } else {
           addModelResponse('Invalid PNR. Please try again.');
         }
@@ -57,16 +117,19 @@ export default function ChatInterface() {
       }, 1000);
     } else if (geminiEnabled) {
       try {
-        const systemPrompt = `You are an AI assistant for RailMadad, a grievance redressal mechanism developed by the Indian Railways. Provide helpful and accurate information about train services in India, ticketing, and passenger assistance. Be polite, professional, and concise. Do not make up information about specific trains, schedules, or policies. Don't ask for PNR number in any case as the user has already provided PNR number and it is ${pnr}. Also reply only and only in ${language} language.
+        let result;
+        if (image) {
+          const imageData = await fileToGenerativePart(image);
+          const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+          result = await model.generateContent([
+            createSystemPrompt(),
+            imageData
+          ]);
+        } else {
+          const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+          result = await model.generateContent([createSystemPrompt()]);
+        }
 
-Current conversation history:
-${history.map((msg) => `${msg.role}: ${msg.content}`).join('\n')}
-
-User's new message: ${input}
-
-First, summarize the user's query in one sentence, then provide a simple summary in 2-3 sentences. After that, give a detailed response to the user's query.`;
-
-        const result = await model.generateContent([systemPrompt]);
         const response = await result.response;
         const text = response.text();
 
@@ -92,25 +155,56 @@ First, summarize the user's query in one sentence, then provide a simple summary
     }
   };
 
+  const createSystemPrompt = () => {
+    return `You are an AI assistant for RailMadad, a grievance redressal mechanism developed by the Indian Railways. Provide helpful and accurate information about train services in India, ticketing, and passenger assistance. Be polite, professional, and concise. Do not make up information about specific trains, schedules, or policies. Don't ask for PNR number in any case as the user has already provided PNR number and it is ${pnr}. Also reply only and only in ${language} language.
+
+Current conversation history:
+${history.map((msg) => `${msg.role}: ${msg.content}`).join('\n')}
+
+User's new message: ${input}
+
+First, summarize the user's query in one sentence, then provide a simple summary in 2-3 sentences. After that, give a detailed response to the user's query.`;
+  };
+
+  async function fileToGenerativePart(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          resolve({
+            inlineData: {
+              data: reader.result.split(',')[1],
+              mimeType: file.type
+            }
+          });
+        } else {
+          reject(new Error('Failed to read file'));
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
   const determineDepartment = async (query, oneLiner) => {
     const selectedDepartment = availableDepartments[option] || [];
     const languageDepartments = getLanguageDepartments(language, option);
 
     const departmentPrompt = `Given the following user query and its one-line summary, determine the most appropriate department from the list below. Only return the name of the department and its sub-category if applicable, nothing else.
+    no markdown
+    User query: ${query}
+    One-line summary: ${oneLiner}
 
-		User query: ${query}
-		One-line summary: ${oneLiner}
-
-		Available departments and their sub-categories:
-		${languageDepartments.join(', ')}
-		Please choose the most suitable department and sub-category from the list above`;
+    Available departments and their sub-categories:
+    ${languageDepartments.join(', ')}
+    Please choose the most suitable department and sub-category from the list above no markdown`;
 
     try {
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       const result = await model.generateContent([departmentPrompt]);
       const response = await result.response;
       const department = response.text().trim();
 
-      // Validate if the department is in the selectedDepartment array
       const isValidDepartment = languageDepartments.some((dept) =>
         department.includes(dept)
       );
@@ -148,20 +242,37 @@ First, summarize the user's query in one sentence, then provide a simple summary
       departmentType: department,
       optionSelected: option,
       userQuery: query,
-      oneLinerExplanation_of_UserQuery_in_english: oneLiner
+      oneLinerExplanation_of_UserQuery_in_english: oneLiner,
+      image: imageBase64 // Add the base64 image data to the JSON
     };
   };
 
   const generateUUID = () => {
-    const alphanumeric = Math.random().toString(36).substring(2, 6); // Generate 4 alphanumeric characters
-    const uuid = `${pnr}-${alphanumeric}`; // Combine PNR with the alphanumeric code
+    const alphanumeric = Math.random().toString(36).substring(2, 6);
+    const uuid = `${pnr}-${alphanumeric}`;
     setUUID(uuid);
     return uuid;
   };
+
   const addModelResponse = (content) => {
+    if (content === undefined || content === null) {
+      console.warn(
+        'Attempted to add undefined or null content to chat history'
+      );
+      return;
+    }
     setHistory((prev) => [
       ...prev,
-      { role: 'model', content: <TypingAnimation content={content} /> }
+      {
+        role: 'model',
+        content: (
+          <ErrorBoundary>
+            <TypingAnimation
+              content={typeof content === 'string' ? content : String(content)}
+            />
+          </ErrorBoundary>
+        )
+      }
     ]);
   };
 
@@ -171,44 +282,21 @@ First, summarize the user's query in one sentence, then provide a simple summary
       multiLang[language].youHaveSelected +
         ' ' +
         selectedOption +
-        multiLang[language].selectedContinuation
+        '. ' +
+        multiLang[language].imageUploadQuestion
     );
     setShowOptions(false);
-    setGeminiEnabled(true);
   };
 
   const handleLanguageSelect = (value) => {
     setLanguage(value);
     setShowLanguageOptions(false);
-    setHistory((prev) => [
-      ...prev,
-      {
-        role: 'model',
-        content: multiLang[value].PNR_Question
-      }
-    ]);
+    addModelResponse(multiLang[value].PNR_Question);
   };
 
-  const TypingAnimation = ({ content }) => {
-    const words = content.split(' ');
-
-    return (
-      <div className="typing-animation">
-        {words.map((word, index) => (
-          <motion.span
-            key={index}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              duration: 0.25,
-              delay: index * 0.1
-            }}
-          >
-            {word}{' '}
-          </motion.span>
-        ))}
-      </div>
-    );
+  const sendJsonToBackend = (jsonData) => {
+    console.log('Sending JSON to backend:', jsonData);
+    NewComplaint(jsonData);
   };
 
   return (
@@ -308,9 +396,28 @@ First, summarize the user's query in one sentence, then provide a simple summary
         />
         <Button
           onClick={handleSubmit}
-          disabled={loading || showOptions || showLanguageOptions}
+          disabled={
+            loading ||
+            showOptions ||
+            showLanguageOptions ||
+            jsonGenerated ||
+            (!pnrVerified && !geminiEnabled)
+          }
         >
           <Send className="h-4 w-4" />
+        </Button>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+        />
+        <Button
+          onClick={() => fileInputRef.current.click()}
+          disabled={!pnrVerified || jsonGenerated || option === null}
+        >
+          <Upload className="h-4 w-4" />
         </Button>
       </div>
     </div>
