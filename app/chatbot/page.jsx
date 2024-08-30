@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, Component } from 'react';
+import React, { useState, useRef, Component } from 'react';
 import { Send, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -75,15 +75,13 @@ export default function ChatInterface() {
   const [jsonGenerated, setJsonGenerated] = useState(false);
   const [UUID, setUUID] = useState('');
   const [image, setImage] = useState(null);
-  const [showImageUpload, setShowImageUpload] = useState(false);
+  const fileInputRef = useRef(null);
 
   const handleImageUpload = (event) => {
     if (event.target.files && event.target.files[0]) {
       setImage(event.target.files[0]);
       addModelResponse(multiLang[language].imageUploaded);
-      setShowImageUpload(false);
-      setShowOptions(true);
-      addModelResponse(multiLang[language].categorySelectionPrompt);
+      setGeminiEnabled(true);
     }
   };
 
@@ -97,10 +95,10 @@ export default function ChatInterface() {
     if (!pnrVerified) {
       setTimeout(() => {
         if (input.trim().toLowerCase() === 'abc123') {
-          addModelResponse(multiLang[language].imageUploadQuestion);
+          addModelResponse(multiLang[language].categorySelectionPrompt);
           setPnrVerified(true);
-          setShowImageUpload(true);
           setPnr(input.trim());
+          setShowOptions(true);
         } else {
           addModelResponse('Invalid PNR. Please try again.');
         }
@@ -273,10 +271,9 @@ First, summarize the user's query in one sentence, then provide a simple summary
         ' ' +
         selectedOption +
         '. ' +
-        multiLang[language].selectedContinuation
+        multiLang[language].imageUploadQuestion
     );
     setShowOptions(false);
-    setGeminiEnabled(true);
   };
 
   const handleLanguageSelect = (value) => {
@@ -344,33 +341,6 @@ First, summarize the user's query in one sentence, then provide a simple summary
         </div>
       )}
 
-      {showImageUpload && (
-        <div className="bg-white border rounded-lg p-4 mb-4 shadow-lg">
-          <h3 className="font-bold text-lg mb-2">
-            {multiLang[language]?.imageUploadTitle}
-          </h3>
-          <p className="text-sm text-gray-500 mb-4">
-            {multiLang[language]?.imageUploadDescription}
-          </p>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="w-full p-2 border rounded"
-          />
-          <Button
-            onClick={() => {
-              setShowImageUpload(false);
-              setShowOptions(true);
-              addModelResponse(multiLang[language].categorySelectionPrompt);
-            }}
-            className="mt-2"
-          >
-            {multiLang[language]?.skipImageUpload}
-          </Button>
-        </div>
-      )}
-
       {showOptions && (
         <div className="bg-white border rounded-lg p-4 mb-4 shadow-lg">
           <h3 className="font-bold text-lg mb-2">
@@ -415,10 +385,27 @@ First, summarize the user's query in one sentence, then provide a simple summary
         <Button
           onClick={handleSubmit}
           disabled={
-            loading || showOptions || showLanguageOptions || jsonGenerated
+            loading ||
+            showOptions ||
+            showLanguageOptions ||
+            jsonGenerated ||
+            (!pnrVerified && !geminiEnabled)
           }
         >
           <Send className="h-4 w-4" />
+        </Button>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+        />
+        <Button
+          onClick={() => fileInputRef.current.click()}
+          disabled={!pnrVerified || jsonGenerated || option === null}
+        >
+          <Upload className="h-4 w-4" />
         </Button>
       </div>
     </div>
