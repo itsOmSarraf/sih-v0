@@ -75,11 +75,22 @@ export default function ChatInterface() {
   const [jsonGenerated, setJsonGenerated] = useState(false);
   const [UUID, setUUID] = useState('');
   const [image, setImage] = useState(null);
+  const [imageBase64, setImageBase64] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleImageUpload = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setImage(event.target.files[0]);
+      const file = event.target.files[0];
+      setImage(file);
+
+      // Convert image to base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result.split(',')[1];
+        setImageBase64(base64String);
+      };
+      reader.readAsDataURL(file);
+
       addModelResponse(multiLang[language].imageUploaded);
       setGeminiEnabled(true);
     }
@@ -231,7 +242,8 @@ First, summarize the user's query in one sentence, then provide a simple summary
       departmentType: department,
       optionSelected: option,
       userQuery: query,
-      oneLinerExplanation_of_UserQuery_in_english: oneLiner
+      oneLinerExplanation_of_UserQuery_in_english: oneLiner,
+      image: imageBase64 // Add the base64 image data to the JSON
     };
   };
 
