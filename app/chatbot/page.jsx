@@ -6,7 +6,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-// import { multiLang, availableDepartments } from '@/Utils/constants';
 import { multiLang } from '../../lib/constants';
 import { availableDepartments } from '../../lib/constants';
 import { motion } from 'framer-motion';
@@ -96,10 +95,7 @@ First, summarize the user's query in one sentence, then provide a simple summary
 
 		Available departments and their sub-categories:
 		${languageDepartments.join(', ')}
-
-		Please choose the most suitable department and sub-category from the list above.
-
-		Department:`;
+		Please choose the most suitable department and sub-category from the list above`;
 
     try {
       const result = await model.generateContent([departmentPrompt]);
