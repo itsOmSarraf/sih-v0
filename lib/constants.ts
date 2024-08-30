@@ -1,2 +1,2 @@
-const APP_NAME = 'MusicReq';
+const APP_NAME = 'RailMadad';
 export { APP_NAME };
