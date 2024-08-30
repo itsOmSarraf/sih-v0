@@ -9,6 +9,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { multiLang } from '../../lib/constants';
 import { availableDepartments } from '../../lib/constants';
 import { motion } from 'framer-motion';
+import { NewComplaint } from 'app/actions/newComplaint';
 
 export default function ChatInterface() {
   const [input, setInput] = useState('');
@@ -27,6 +28,13 @@ export default function ChatInterface() {
 
   const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_APIKEY);
   const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+  const sendJsonToBackend = (jsonData) => {
+    console.log('Sending JSON to backend:', jsonData);
+
+    NewComplaint(jsonData);
+    // Implement actual backend sending logic here
+  };
 
   const handleSubmit = async () => {
     if (input.trim() === '') return;
@@ -145,23 +153,11 @@ First, summarize the user's query in one sentence, then provide a simple summary
   };
 
   const generateUUID = () => {
-    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-      /[xy]/g,
-      function (c) {
-        var r = (Math.random() * 16) | 0,
-          v = c == 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      }
-    );
+    const alphanumeric = Math.random().toString(36).substring(2, 6); // Generate 4 alphanumeric characters
+    const uuid = `${pnr}-${alphanumeric}`; // Combine PNR with the alphanumeric code
     setUUID(uuid);
     return uuid;
   };
-
-  const sendJsonToBackend = (jsonData) => {
-    console.log('Sending JSON to backend:', jsonData);
-    // Implement actual backend sending logic here
-  };
-
   const addModelResponse = (content) => {
     setHistory((prev) => [
       ...prev,
