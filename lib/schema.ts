@@ -36,6 +36,23 @@ const PNR = mySchema.table('pnr', {
   updated_at: date('updated_at').notNull()
 });
 
-export { PNR };
+const Complaint = mySchema.table('complaint', {
+  PNR: text('PNR'),
+  uuid: text('uuid').primaryKey(),
+  created_at: date('created_at').notNull(),
+  updated_at: date('updated_at').notNull(),
+  status: text('status').notNull(),
+  department: text('department').notNull(),
+  subtype: text('subtype').notNull(),
+  oneLineAI: text('oneLineAI').notNull(),
+  originalQuery: text('originalQuery').notNull(),
+  feedback: text('feedback'),
+  stars: integer('stars')
+});
+
+export { PNR, Complaint };
 export type PNR = typeof PNR.$inferSelect;
 export type newPNR = typeof PNR.$inferInsert;
+
+export type Complaint = typeof Complaint.$inferSelect;
+export type newComplaint = typeof Complaint.$inferInsert;
