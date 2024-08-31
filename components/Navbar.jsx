@@ -1,8 +1,7 @@
-"use client"
+'use client';
 import { Phone } from 'lucide-react';
 import useLanguageStore from '../lib/Stores/LanguageStore'; // Import the Zustand store
-import multiLang from '../lib/constants'; // Import the multi-language object
-
+import { multiLang } from '@/lib/constants';
 const Navbar = () => {
   const { language, setLanguage } = useLanguageStore(); // Access language and setLanguage from the store
 
@@ -22,21 +21,25 @@ const Navbar = () => {
         />
       </div>
       <div>
-        <h1 className="text-[#75002b] text-5xl font-bold">{multiLang[language].NavbarTitle}</h1>
-        <p className="text-gray-500">
-          For Inquiry, Assistance & Grievance Redressal
-        </p>
+        <h1 className="text-[#75002b] text-5xl font-bold">
+          {multiLang[language].NavbarTitle}
+        </h1>
+        <p className="text-gray-500">{multiLang[language].NavbarSubTitle}</p>
       </div>
       <div className="flex items-center gap-5">
         <div className="cursor-pointer flex items-center gap-1 bg-orange-500 text-3xl text-white font-bold px-4 py-2 rounded-lg">
           <Phone />
           <a href="tel:139">139</a>
         </div>
-        <p className="text-base">for Security/ Medical Assistance</p>
+        <p className="text-base">{multiLang[language].NavbarSubTitle2}</p>
       </div>
       <div className="flex gap-3">
-        <button className="bg-[#dcdef9] px-8 py-2 rounded-lg">FAQ</button>
-        <button className="bg-[#efe4e8] px-6 py-2 rounded-lg">Search</button>
+        <button className="bg-[#dcdef9] px-8 py-2 rounded-lg">
+          {multiLang[language].NavbarFAQ}
+        </button>
+        <button className="bg-[#efe4e8] px-6 py-2 rounded-lg">
+          {multiLang[language].NavbarSearch}
+        </button>
       </div>
       <div>
         <select
