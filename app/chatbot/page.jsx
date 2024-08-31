@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Upload } from 'lucide-react';
+import { Send, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -76,6 +76,7 @@ export default function ChatInterface() {
   const [UUID, setUUID] = useState('');
   const [image, setImage] = useState(null);
   const [imageBase64, setImageBase64] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
 
@@ -99,9 +100,10 @@ export default function ChatInterface() {
         const file = event.target.files[0];
         setImage(file);
 
-        // Convert image to base64
+        // Convert image to base64 and create preview
         const reader = new FileReader();
         reader.onloadend = () => {
+          setImagePreview(reader.result);
           const base64String = reader.result.split(',')[1];
           setImageBase64(base64String);
         };
@@ -114,9 +116,19 @@ export default function ChatInterface() {
     [language]
   );
 
+  const removeImage = useCallback(() => {
+    setImage(null);
+    setImagePreview(null);
+    setImageBase64(null);
+  }, []);
+
   const handleSubmit = async () => {
-    if (input.trim() === '') return;
-    const newUserMessage = { role: 'user', content: input };
+    if (input.trim() === '' && !image) return;
+    const newUserMessage = {
+      role: 'user',
+      content: input,
+      image: imagePreview
+    };
     setHistory((prev) => [...prev, newUserMessage]);
     setInput('');
     setLoading(true);
@@ -167,6 +179,9 @@ export default function ChatInterface() {
         }
 
         addModelResponse(detailedResponse);
+        setImagePreview(null);
+        setImage(null);
+        setImageBase64(null);
       } catch (error) {
         console.error(error);
         addModelResponse('Oops! Something went wrong.');
@@ -176,13 +191,10 @@ export default function ChatInterface() {
   };
 
   const createSystemPrompt = useCallback(() => {
-    return `You are an AI assistant for RailMadad, a grievance redressal mechanism developed by the Indian Railways. Provide helpful and accurate information about train services in India, ticketing, and passenger assistance. Be polite, professional, and concise. Do not make up information about specific trains, schedules, or policies. Don't ask for PNR number in any case as the user has already provided PNR number and it is ${pnr}. Also reply only and only in ${language} language.
-
+    return `You are an AI assistant for RailMadad, a grievance redressal mechanism developed by the Indian Railways. Provide helpful and accurate information about train services in India, ticketing, and passenger assistance. Be polite, professional, and concise. Do not make up information about specific trains, schedules, or policies. Don't ask for PNR number in any case as the user has already provided PNR number and it is ${pnr}. Also reply only and only in ${language} language. Don't Give markdown code, just plain simple english 
 Current conversation history:
 ${history.map((msg) => `${msg.role}: ${msg.content}`).join('\n')}
-
 User's new message: ${input}
-
 First, summarize the user's query in one sentence, then provide a simple summary in 2-3 sentences. After that, give a detailed response to the user's query.`;
   }, [history, input, language, pnr]);
 
@@ -346,12 +358,17 @@ First, summarize the user's query in one sentence, then provide a simple summary
             }`}
           >
             <p
-              className={`${
-                item.role === 'model' ? 'text-blue-800' : 'text-green-800'
-              }`}
+              className={`${item.role === 'model' ? 'text-blue-800' : 'text-green-800'}`}
             >
               {item.content}
             </p>
+            {item.role === 'user' && item.image && (
+              <img
+                src={item.image}
+                alt="User uploaded"
+                className="mt-2 max-w-full h-auto rounded-lg"
+              />
+            )}
           </motion.div>
         ))}
         {loading && (
@@ -420,6 +437,22 @@ First, summarize the user's query in one sentence, then provide a simple summary
         </div>
       )}
 
+      {imagePreview && (
+        <div className="relative inline-block mb-4">
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="max-w-[150px] h-auto rounded-lg"
+          />
+          <button
+            onClick={removeImage}
+            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 m-1"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
       <div className="flex items-center space-x-2">
         <Textarea
           placeholder={multiLang[language]?.placeholderText}
@@ -441,7 +474,7 @@ First, summarize the user's query in one sentence, then provide a simple summary
             showOptions ||
             showLanguageOptions ||
             jsonGenerated ||
-            !isTyping
+            (!isTyping && !image)
           }
         >
           <Send className="h-4 w-4" />
@@ -453,7 +486,6 @@ First, summarize the user's query in one sentence, then provide a simple summary
           ref={fileInputRef}
           style={{ display: 'none' }}
         />
-
         <Button
           onClick={() => fileInputRef.current.click()}
           disabled={!pnrVerified || jsonGenerated || option === null || loading}
