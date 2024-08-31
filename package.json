@@ -53,5 +53,8 @@
     "singleQuote": true,
     "tabWidth": 2,
     "trailingComma": "none"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.10"
   }
 }
