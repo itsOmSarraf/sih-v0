@@ -439,19 +439,19 @@ First, summarize the user's query in one sentence, then provide a simple summary
         >
           <Send className="h-4 w-4" />
         </Button>
-        <input
+        {/* <input
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
           ref={fileInputRef}
           style={{ display: 'none' }}
-        />
-        <Button
+        /> */}
+        {/* <Button
           onClick={() => fileInputRef.current.click()}
           disabled={!pnrVerified || jsonGenerated || option === null || loading}
         >
           <Upload className="h-4 w-4" />
-        </Button>
+        </Button> */}
       </div>
     </div>
   );
