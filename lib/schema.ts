@@ -32,27 +32,30 @@ const PNR = mySchema.table('pnr', {
   arrivalDate: date('arrivalDate').notNull(),
   bookingStatus: text('bookingStatus').notNull(),
   bookingDate: date('bookingDate').notNull(),
-  created_at: date('created_at').notNull(),
-  updated_at: date('updated_at').notNull()
+  created_at: date('created_at'),
+  updated_at: date('updated_at')
 });
 
 const Complaint = mySchema.table('complaint', {
-  PNR: text('PNR'),
+  PNR: text('PNR').notNull(),
   uuid: text('uuid').primaryKey(),
-  created_at: date('created_at').notNull(),
-  updated_at: date('updated_at').notNull(),
-  status: text('status').notNull(),
+  created_at: timestamp('created_at').notNull(),
+  updated_at: timestamp('updated_at').notNull(),
+  status: text('status', {
+    enum: ['to-do', 'in-progress', 'resolved']
+  }).notNull(),
   department: text('department').notNull(),
   subtype: text('subtype').notNull(),
   oneLineAI: text('oneLineAI').notNull(),
   originalQuery: text('originalQuery').notNull(),
+  severity: text('severity', { enum: ['low', 'medium', 'high'] }).notNull(),
   feedback: text('feedback'),
   stars: integer('stars')
 });
 
 export { PNR, Complaint };
-export type PNR = typeof PNR.$inferSelect;
+export type PNRread = typeof PNR.$inferSelect;
 export type newPNR = typeof PNR.$inferInsert;
 
-export type Complaint = typeof Complaint.$inferSelect;
+export type Complaintread = typeof Complaint.$inferSelect;
 export type newComplaint = typeof Complaint.$inferInsert;
