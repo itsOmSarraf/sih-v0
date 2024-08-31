@@ -12,6 +12,7 @@ import {
   boolean
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { string } from 'prop-types';
 
 export const mySchema = pgSchema('my_schema_new');
 
@@ -50,7 +51,8 @@ const Complaint = mySchema.table('complaint', {
   originalQuery: text('originalQuery').notNull(),
   severity: text('severity', { enum: ['low', 'medium', 'high'] }).notNull(),
   feedback: text('feedback'),
-  stars: integer('stars')
+  stars: integer('stars'),
+  image: text('imageb64')
 });
 
 export { PNR, Complaint };
