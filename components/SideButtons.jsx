@@ -1,6 +1,7 @@
 import useLanguageStore from '@/lib/Stores/LanguageStore';
 import { multiLang } from '@/lib/constants';
 import React from 'react';
+import ChatInterface from 'app/chatbot/page';
 
 const SideButtons = () => {
   const { language } = useLanguageStore();
@@ -111,8 +112,10 @@ const SideButtons = () => {
       </div>
 
       {/* ChatSection */}
-      <div className="w-1/2 h-[90%] my-auto rounded-2xl border-l-[7px] border-t-[7px] border-[#75002b] bg-white z-10 flex items-center justify-center mr-20">
-        <p className="text-gray-500">ChatBot Section</p>
+      <div className="w-1/2 h-[90%] my-auto rounded-2xl border-l-[7px] border-t-[7px] border-[#75002b] bg-white z-10 flex mr-20 overflow-hidden">
+        <div className="w-full h-full overflow-auto">
+          <ChatInterface />
+        </div>
       </div>
     </div>
   );
