@@ -448,7 +448,7 @@ First, summarize the user's query in one sentence, then provide a simple summary
         />
         <Button
           onClick={() => fileInputRef.current.click()}
-          disabled={!pnrVerified || jsonGenerated || option === null}
+          disabled={!pnrVerified || jsonGenerated || option === null || loading}
         >
           <Upload className="h-4 w-4" />
         </Button>
