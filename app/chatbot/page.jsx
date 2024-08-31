@@ -409,7 +409,14 @@ First, summarize the user's query in one sentence, then provide a simple summary
 
       {jsonGenerated && (
         <div className="text-green-500 font-semibold mb-4">
-          Your ticket has been raised with UUID: {UUID}
+          Your ticket has been raised with UUID:{' '}
+          <a
+            href={`/complaint/${UUID}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {UUID}
+          </a>
         </div>
       )}
 
