@@ -1,4 +1,4 @@
-// import Navbar from '@/components/Navbar';
+import Navbar from '@/components/Navbar';
 import './globals.css';
 export const metadata = {
   title: 'RailMadad',
@@ -13,7 +13,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex h-screen w-full flex-col text-black">
-        {/* <Navbar /> */}
+        <Navbar />
         {children}
       </body>
     </html>

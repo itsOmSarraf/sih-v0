@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import searchUUID from 'app/actions/searchComplaint';
 import { Complaintread } from '@/lib/schema';
-import Navbar from '@/components/Navbar';
 
 export default function SearchTicket() {
   const [inputValue, setInputValue] = useState('');
@@ -34,7 +33,6 @@ export default function SearchTicket() {
 
   return (
     <div>
-      <Navbar />
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
         {/* Search Bar */}
         <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">

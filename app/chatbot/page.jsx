@@ -446,7 +446,7 @@ First, summarize the user's query in one sentence, then provide a simple summary
           ref={fileInputRef}
           style={{ display: 'none' }}
         />
-        /
+
         <Button
           onClick={() => fileInputRef.current.click()}
           disabled={!pnrVerified || jsonGenerated || option === null || loading}
