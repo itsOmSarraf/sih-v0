@@ -137,16 +137,17 @@ export default function ChatInterface() {
     } else if (geminiEnabled) {
       try {
         let result;
+        const systemPrompt = createSystemPrompt();
+
         if (image) {
+          // Use Gemini 1.5 Pro for image-based queries
           const imageData = await fileToGenerativePart(image);
           const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
-          result = await model.generateContent([
-            createSystemPrompt(),
-            imageData
-          ]);
+          result = await model.generateContent([systemPrompt, imageData]);
         } else {
+          // Use Gemini 1.5 Flash for text-only queries
           const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-          result = await model.generateContent([createSystemPrompt()]);
+          result = await model.generateContent([systemPrompt]);
         }
 
         const response = await result.response;
@@ -312,6 +313,7 @@ First, summarize the user's query in one sentence, then provide a simple summary
           multiLang[language].imageUploadQuestion
       );
       setShowOptions(false);
+      setGeminiEnabled(true);
     },
     [language, addModelResponse]
   );
