@@ -1,6 +1,15 @@
+"use client"
 import { Phone } from 'lucide-react';
+import useLanguageStore from '../lib/Stores/LanguageStore'; // Import the Zustand store
+import multiLang from '../lib/constants'; // Import the multi-language object
 
 const Navbar = () => {
+  const { language, setLanguage } = useLanguageStore(); // Access language and setLanguage from the store
+
+  const handleLanguageChange = (e) => {
+    setLanguage(e.target.value); // Update the global language state
+  };
+
   return (
     <div className="flex items-center justify-between px-6">
       <div className="flex items-center">
@@ -13,7 +22,7 @@ const Navbar = () => {
         />
       </div>
       <div>
-        <h1 className="text-[#75002b] text-5xl font-bold">RailMadad</h1>
+        <h1 className="text-[#75002b] text-5xl font-bold">{multiLang[language].NavbarTitle}</h1>
         <p className="text-gray-500">
           For Inquiry, Assistance & Grievance Redressal
         </p>
@@ -31,8 +40,10 @@ const Navbar = () => {
       </div>
       <div>
         <select
-          name=""
-          id=""
+          name="language"
+          id="language"
+          value={language} // Bind the select value to the global language state
+          onChange={handleLanguageChange} // Update the global state on change
           className="border-[1px] border-gray-300 rounded-lg px-5 py-2"
         >
           <option value="en">English</option>
@@ -43,4 +54,5 @@ const Navbar = () => {
     </div>
   );
 };
+
 export default Navbar;
