@@ -4,6 +4,7 @@ import searchUUID from 'app/actions/searchComplaint';
 import { Complaintread } from '@/lib/schema';
 import Navbar from '@/components/Navbar';
 import { uuid } from 'drizzle-orm/pg-core';
+// import Image from 'next/image';
 
 export default function SearchTicket({ params }: { params: { slug: string } }) {
     const [complaintData, setComplaintData] = useState<Complaintread | null>(null);
@@ -68,6 +69,7 @@ export default function SearchTicket({ params }: { params: { slug: string } }) {
                             <p><strong className="text-gray-700">AI Summary:</strong> {complaintData.oneLineAI}</p>
                             <p><strong className="text-gray-700">Original Query:</strong> {complaintData.originalQuery}</p>
                             <p><strong className="text-gray-700">Severity:</strong> {complaintData.severity}</p>
+                            {complaintData.image && <img src={`data:image/jpeg;base64,${complaintData.image}`} alt='image of the complaint' />}
                         </div>
                     </div>
                 )}

@@ -101,6 +101,7 @@ export default function SearchTicket() {
                 <strong className="text-gray-700">Severity:</strong>{' '}
                 {complaintData.severity}
               </p>
+              {complaintData.image && <img src={`data:image/jpeg;base64,${complaintData.image}`} alt='image of the complaint' />}
             </div>
           </div>
         )}

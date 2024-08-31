@@ -50,6 +50,7 @@ export async function NewComplaint(naya_complaint: botComplaint) {
     originalQuery: naya_complaint.userQuery,
     department: naya_complaint.optionSelected,
     subtype: naya_complaint.departmentType,
+    image: naya_complaint.image,
     status: 'to-do',
     severity: severity,
     created_at: new Date(),
