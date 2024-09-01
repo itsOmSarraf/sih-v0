@@ -1,6 +1,5 @@
-'use client';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Upload, X } from 'lucide-react';
+import { Bot, Send, Upload, UserRound, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -357,11 +356,18 @@ First, summarize the user's query in one sentence, then provide a simple summary
               item.role === 'model' ? 'bg-blue-100 ml-auto' : 'bg-green-100'
             }`}
           >
-            <p
-              className={`${item.role === 'model' ? 'text-blue-800' : 'text-green-800'}`}
-            >
-              {item.content}
-            </p>
+            <div className="flex items-start">
+              {item.role === 'model' ? (
+                <Bot className="mr-2 flex-shrink-0" />
+              ) : (
+                <UserRound className="mr-2 flex-shrink-0" />
+              )}
+              <p
+                className={`${item.role === 'model' ? 'text-blue-800' : 'text-green-800'}`}
+              >
+                {item.content}
+              </p>
+            </div>
             {item.role === 'user' && item.image && (
               <img
                 src={item.image}
