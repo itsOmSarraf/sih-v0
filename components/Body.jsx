@@ -7,7 +7,7 @@ const Body = () => {
       <img
         src="https://railmadad.indianrailways.gov.in/madad/final/images/body-bg.jpg"
         alt=""
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover hidden md:block"
       />
       <SideButtons />
     </div>

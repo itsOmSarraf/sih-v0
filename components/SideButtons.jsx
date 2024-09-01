@@ -6,17 +6,17 @@ import ChatInterface from 'app/chatbot/page';
 const SideButtons = () => {
   const { language } = useLanguageStore();
   return (
-    <div className="absolute inset-0 flex justify-between">
+    <div className="md:absolute md:inset-0 md:flex md:justify-between">
       {/* Buttons */}
-      <div className="pt-36 pl-16 z-10">
-        <div className="flex gap-14 mb-4">
+      <div className="md:pt-36 pt-10  md:pl-16 z-10 mb-10 md:mb-0">
+        <div className="flex justify-between -mr-4 md:-mr-0 md:gap-14 md:mb-4 mb-3">
           <a href="https://www.irctc.co.in/nget/" target="_blank">
             <div className="flex flex-col w-16">
               <img
                 src="https://railmadad.indianrailways.gov.in/madad/final/images/booking-icon-1.png"
                 alt=""
               />
-              <p className="pt-2 text-center text-white text-sm">
+              <p className="pt-2 w-fit text-center md:text-white text-black md:text-sm text-xs">
                 {multiLang[language].EightButton_1}
               </p>
             </div>
@@ -27,7 +27,7 @@ const SideButtons = () => {
                 src="https://railmadad.indianrailways.gov.in/madad/final/images/booking-icon-2.png"
                 alt=""
               />
-              <p className="pt-2 text-center text-white text-sm">
+              <p className="pt-2 w-fit text-center md:text-white text-black md:text-sm text-xs">
                 {multiLang[language].EightButton_2}
               </p>
             </div>
@@ -38,7 +38,7 @@ const SideButtons = () => {
                 src="https://railmadad.indianrailways.gov.in/madad/final/images/booking-icon-3.png"
                 alt=""
               />
-              <p className="pt-2 text-center text-white text-sm">
+              <p className="pt-2 w-fit text-center md:text-white -ml-2 text-black md:text-sm text-xs">
                 {multiLang[language].EightButton_3}
               </p>
             </div>
@@ -50,20 +50,20 @@ const SideButtons = () => {
                 alt=""
                 className="max-w-16"
               />
-              <p className="pt-2 text-center text-white text-sm -ml-8">
+              <p className="pt-2 w-fit text-center md:text-white text-black md:text-sm text-xs -ml-8">
                 {multiLang[language].EightButton_4}
               </p>
             </div>
           </a>
         </div>
-        <div className="flex gap-14">
+        <div className="flex justify-around -mr-5 md:-mr-0 md:gap-14">
           <a href="http://www.indianrailways.gov.in/" target="_blank">
             <div className="flex flex-col w-16">
               <img
                 src="https://railmadad.indianrailways.gov.in/madad/final/images/booking-icon-5.png"
                 alt=""
               />
-              <p className="pt-2 text-center text-white text-sm">
+              <p className="pt-2 w-fit text-center md:text-white text-black md:text-sm text-xs">
                 {multiLang[language].EightButton_5}
               </p>
             </div>
@@ -77,7 +77,7 @@ const SideButtons = () => {
                 src="https://railmadad.indianrailways.gov.in/madad/final/images/booking-icon-6.png"
                 alt=""
               />
-              <p className="pt-2 text-center text-white text-sm">
+              <p className="pt-2 w-fit text-center md:text-white text-black md:text-sm text-xs">
                 {multiLang[language].EightButton_6}
               </p>
             </div>
@@ -91,7 +91,7 @@ const SideButtons = () => {
                 src="https://railmadad.indianrailways.gov.in/madad/final/images/booking-icon-7.png"
                 alt=""
               />
-              <p className="pt-2 text-center text-white text-sm">
+              <p className="pt-2 w-fit text-center md:text-white text-black md:text-sm text-xs">
                 {multiLang[language].EightButton_7}
               </p>
             </div>
@@ -103,7 +103,7 @@ const SideButtons = () => {
                 alt=""
                 className="max-w-16"
               />
-              <p className="pt-2 text-center text-white text-sm -ml-8">
+              <p className="pt-2 w-fit text-center md:text-white text-black md:text-sm text-xs -ml-8">
                 {multiLang[language].EightButton_8}
               </p>
             </div>
@@ -112,7 +112,7 @@ const SideButtons = () => {
       </div>
 
       {/* ChatSection */}
-      <div className="w-1/2 h-[90%] my-auto rounded-2xl border-l-[7px] border-t-[7px] border-[#75002b] bg-white z-10 flex mr-20 overflow-hidden">
+      <div className="md:w-1/2 w-[97%] h-screen md:h-[90%] mx-auto my-auto rounded-2xl md:border-l-[7px] md:border-t-[7px] border-4 border-[#75002b] bg-white z-10 flex md:mr-20 overflow-hidden mb-10">
         <div className="w-full h-full overflow-auto">
           <ChatInterface />
         </div>
