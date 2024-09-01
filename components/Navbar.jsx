@@ -43,9 +43,11 @@ const Navbar = () => {
         <button className="bg-[#dcdef9] px-8 py-2 rounded-lg ">
           {multiLang[language].NavbarFAQ}
         </button>
-        <button className="bg-[#efe4e8] px-6 py-2 rounded-lg">
-          {multiLang[language].NavbarSearch}
-        </button>
+        <a href="/search">
+          <button className="bg-[#efe4e8] px-6 py-2 rounded-lg">
+            {multiLang[language].NavbarSearch}
+          </button>
+        </a>
       </div>
       <div>
         <select
