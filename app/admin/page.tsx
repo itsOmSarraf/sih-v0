@@ -237,6 +237,7 @@ const ComplaintCard: React.FC<ComplaintCardProps> = ({
                 <p>Query: {complaint.originalQuery}</p>
                 <p>Department: {complaint.department}</p>
                 <p>Severity: {complaint.severity}</p>
+                <p>UUID: {complaint.uuid}</p>
                 <Button
                     onClick={(e) => {
                         e.stopPropagation();
