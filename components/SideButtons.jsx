@@ -112,7 +112,7 @@ const SideButtons = () => {
       </div>
 
       {/* ChatSection */}
-      <div className="md:w-1/2 w-[97%] h-screen md:h-[90%] mx-auto my-auto rounded-2xl md:border-l-[7px] md:border-t-[7px] border-4 border-[#75002b] bg-white z-10 flex md:mr-20 overflow-hidden mb-10">
+      <div className="md:w-1/2 w-[97%] h-screen md:h-[70%] mx-auto md:mt-12 rounded-2xl md:border-l-[7px] md:border-t-[7px] border-4 border-[#75002b] bg-white z-10 flex md:mr-20 overflow-hidden mb-10">
         <div className="w-full h-full overflow-auto">
           <ChatInterface />
         </div>
