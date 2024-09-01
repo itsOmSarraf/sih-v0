@@ -2,6 +2,7 @@
 import { db } from '@/lib/db';
 import { Complaint } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 
 type ComplaintStatus = 'to-do' | 'in-progress' | 'resolved';
 
@@ -14,10 +15,12 @@ export async function updateComplaintStatus(
   // Validate the newStatus
   const validStatuses: ComplaintStatus[] = ['to-do', 'in-progress', 'resolved'];
   if (!validStatuses.includes(newStatus)) {
+    console.error(`Invalid status: ${newStatus}`);
     throw new Error(`Invalid status: ${newStatus}`);
   }
 
   try {
+    console.log('Executing database update...');
     const updatedComplaints = await db
       .update(Complaint)
       .set({
@@ -27,7 +30,10 @@ export async function updateComplaintStatus(
       .where(eq(Complaint.uuid, uuid))
       .returning();
 
+    console.log('Database update complete. Result:', updatedComplaints);
+
     if (updatedComplaints.length === 0) {
+      console.error(`No complaint found with uuid ${uuid}`);
       throw new Error(`No complaint found with uuid ${uuid}`);
     }
 
@@ -36,9 +42,22 @@ export async function updateComplaintStatus(
 
     // Verify that the status was updated correctly
     if (updatedComplaint.status !== newStatus) {
-      throw new Error(
+      console.error(
         `Status was not updated correctly. Expected ${newStatus}, got ${updatedComplaint.status}`
       );
+
+      // Try a direct SQL query if the ORM update didn't work
+      console.log('Attempting direct SQL update...');
+      const result = await db.execute(
+        sql`UPDATE my_schema_new.complaint SET status = ${newStatus}, updated_at = NOW() WHERE uuid = ${uuid} RETURNING *`
+      );
+      console.log('Direct SQL update result:', result);
+
+      if (result.length > 0) {
+        return result[0] as typeof Complaint.$inferSelect;
+      } else {
+        throw new Error(`Failed to update status via direct SQL query`);
+      }
     }
 
     return updatedComplaint;

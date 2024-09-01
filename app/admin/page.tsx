@@ -209,7 +209,6 @@ const TicketDetailsPopup: React.FC<TicketDetailsPopupProps> = ({
         </>
     );
 };
-
 interface ComplaintCardProps {
     complaint: Complaint;
     onStatusChange: (uuid: string, newStatus: ComplaintStatus) => void;
@@ -258,13 +257,6 @@ interface KanbanColumnProps {
     onViewDetails: (complaint: Complaint) => void;
 }
 
-interface KanbanColumnProps {
-    title: string;
-    complaints: Complaint[];
-    onStatusChange: (uuid: string, newStatus: ComplaintStatus) => void;
-    onViewDetails: (complaint: Complaint) => void;
-}
-
 const KanbanColumn: React.FC<KanbanColumnProps> = ({
     title,
     complaints,
@@ -305,15 +297,20 @@ const ComplaintsKanbanBoard: React.FC = () => {
     const [complaints, setComplaints] = useState<Complaint[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedTicket, setSelectedTicket] = useState<Complaint | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchComplaints = async () => {
             try {
                 setIsLoading(true);
+                setError(null);
+                console.log('Fetching all complaints...');
                 const allComplaints = (await getAllComplaints()) as Complaint[];
+                console.log('Fetched complaints:', allComplaints);
                 setComplaints(allComplaints);
             } catch (error) {
                 console.error('Error fetching complaints:', error);
+                setError('Failed to fetch complaints. Please try again later.');
             } finally {
                 setIsLoading(false);
             }
@@ -325,8 +322,10 @@ const ComplaintsKanbanBoard: React.FC = () => {
         uuid: string,
         newStatus: ComplaintStatus
     ) => {
+        console.log(`Attempting to update complaint ${uuid} to status ${newStatus}`);
         try {
             const updatedComplaint = await updateComplaintStatus(uuid, newStatus);
+            console.log('Received updated complaint:', updatedComplaint);
             // @ts-ignore
             setComplaints((prevComplaints) =>
                 prevComplaints.map((complaint) =>
@@ -335,19 +334,26 @@ const ComplaintsKanbanBoard: React.FC = () => {
             );
         } catch (error) {
             console.error('Failed to update complaint status:', error);
+            setError('Failed to update complaint status. Please try again.');
         }
     };
 
     const handleViewDetails = (complaint: Complaint) => {
+        console.log('Viewing details for complaint:', complaint);
         setSelectedTicket(complaint);
     };
 
     const closePopup = () => {
+        console.log('Closing ticket details popup');
         setSelectedTicket(null);
     };
 
     if (isLoading) {
         return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
     }
 
     return (
