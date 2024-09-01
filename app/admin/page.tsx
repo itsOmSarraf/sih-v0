@@ -17,6 +17,7 @@ import {
 import { motion } from 'framer-motion';
 import getAllComplaints from 'app/actions/allComplaints';
 import { updateComplaintStatus } from 'app/actions/updateComplaintStatus';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type ComplaintStatus = 'to-do' | 'in-progress' | 'resolved';
 type ComplaintSeverity = 'low' | 'medium' | 'high';
@@ -209,6 +210,7 @@ const TicketDetailsPopup: React.FC<TicketDetailsPopupProps> = ({
         </>
     );
 };
+
 interface ComplaintCardProps {
     complaint: Complaint;
     onStatusChange: (uuid: string, newStatus: ComplaintStatus) => void;
@@ -292,29 +294,83 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({
         </div>
     );
 };
+//@ts-ignore
+const DepartmentDropdown = ({ departments, selectedDepartment, onDepartmentChange }) => {
+    return (
+        <Select onValueChange={onDepartmentChange} value={selectedDepartment}>
+            <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select Department" />
+            </SelectTrigger>
+            <SelectContent>
+
+                <SelectItem value="all">All Departments</SelectItem>
+                {departments.map((dept: any) => (
+                    <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+};
+
 
 const ComplaintsKanbanBoard: React.FC = () => {
     const [complaints, setComplaints] = useState<Complaint[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedTicket, setSelectedTicket] = useState<Complaint | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [selectedDepartment, setSelectedDepartment] = useState<string>("all");
+
+    const departments = [
+        'Luggage/Parcels',
+        'Goods',
+        'Medical Assistance',
+        'Facilities For women With special needs',
+        'Divyangjan Facilities',
+        'Passenger Amenities',
+        'Cleanliness',
+        'Water Availability',
+        'Catering and Vending Service',
+        'Miscellaneous',
+        'Staff Behaviour',
+        'Electrical Equipment',
+        'Reserved Tickets',
+        'Unreserved Tickets',
+        'Refund of Tickets',
+        'Overcrowding in Coaches',
+        'Sexual Harassment/Misbehaviour',
+        'Chain Pulling',
+        'Nuisance by Unauthorized Persons',
+        'Harassment/Extortion by Authorities',
+        'Suspicious or Unclaimed Items',
+        'Missing or Unresponsive Passenger',
+        'Substance Abuse',
+        'Violence/Disorder',
+        'Passenger Accident',
+        'Lost/Found',
+        'Other Issues'
+    ];
+
+    const fetchComplaints = async (dept?: string) => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            console.log(`Fetching complaints for department: ${dept || 'all'}`);
+            const result: any = await getAllComplaints(dept);
+            if (Array.isArray(result)) {
+                console.log('Fetched complaints:', result);
+                setComplaints(result);
+            } else {
+                throw new Error('Unexpected response from getAllComplaints');
+            }
+        } catch (error) {
+            console.error('Error fetching complaints:', error);
+            setError('Failed to fetch complaints. Please try again later.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchComplaints = async () => {
-            try {
-                setIsLoading(true);
-                setError(null);
-                console.log('Fetching all complaints...');
-                const allComplaints = (await getAllComplaints()) as Complaint[];
-                console.log('Fetched complaints:', allComplaints);
-                setComplaints(allComplaints);
-            } catch (error) {
-                console.error('Error fetching complaints:', error);
-                setError('Failed to fetch complaints. Please try again later.');
-            } finally {
-                setIsLoading(false);
-            }
-        };
         fetchComplaints();
     }, []);
 
@@ -348,6 +404,11 @@ const ComplaintsKanbanBoard: React.FC = () => {
         setSelectedTicket(null);
     };
 
+    const handleDepartmentChange = (department: string) => {
+        setSelectedDepartment(department);
+        fetchComplaints(department === 'all' ? undefined : department);
+    };
+
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -361,6 +422,13 @@ const ComplaintsKanbanBoard: React.FC = () => {
             <h1 className="text-3xl font-bold my-10 mx-auto w-full text-center text-[#75002b]">
                 Complaints Kanban Board
             </h1>
+            <div className="mb-6">
+                <DepartmentDropdown
+                    departments={departments}
+                    selectedDepartment={selectedDepartment}
+                    onDepartmentChange={handleDepartmentChange}
+                />
+            </div>
             <div className="flex space-x-4">
                 <KanbanColumn
                     title="To Do"
@@ -389,3 +457,4 @@ const ComplaintsKanbanBoard: React.FC = () => {
 };
 
 export default ComplaintsKanbanBoard;
+
