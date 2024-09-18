@@ -66,7 +66,6 @@ export default function ChatInterface() {
   const [loading, setLoading] = useState(false);
   const [option, setOption] = useState(null);
   const [pnrVerified, setPnrVerified] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
   const [geminiEnabled, setGeminiEnabled] = useState(false);
   const [language, setLanguage] = useState(null);
   const [showLanguageOptions, setShowLanguageOptions] = useState(true);
@@ -110,7 +109,6 @@ export default function ChatInterface() {
         reader.readAsDataURL(file);
 
         addModelResponse(multiLang[language].imageUploaded);
-        setGeminiEnabled(true);
       }
     },
     [language]
@@ -137,10 +135,20 @@ export default function ChatInterface() {
     if (!pnrVerified) {
       setTimeout(() => {
         if (input.trim().toLowerCase() === 'abc123') {
-          addModelResponse(multiLang[language].categorySelectionPrompt);
           setPnrVerified(true);
           setPnr(input.trim());
-          setShowOptions(true);
+
+          // Automatically select a random option
+          const randomOptionIndex = Math.floor(
+            Math.random() * multiLang[language].categoriesArray.length
+          );
+          const randomOption =
+            multiLang[language].categoriesArray[randomOptionIndex];
+          setOption(randomOption);
+
+          // Enable Gemini and prompt for query
+          setGeminiEnabled(true);
+          addModelResponse(multiLang[language].askForQuery);
         } else {
           addModelResponse('Invalid PNR. Please try again.');
         }
@@ -314,22 +322,6 @@ First, summarize the user's query in one sentence, then provide a simple summary
     ]);
   }, []);
 
-  const handleOptionSelect = useCallback(
-    (selectedOption) => {
-      setOption(selectedOption);
-      addModelResponse(
-        multiLang[language].youHaveSelected +
-          ' ' +
-          selectedOption +
-          '. ' +
-          multiLang[language].imageUploadQuestion
-      );
-      setShowOptions(false);
-      setGeminiEnabled(true);
-    },
-    [language, addModelResponse]
-  );
-
   const handleLanguageSelect = useCallback(
     (value) => {
       setLanguage(value);
@@ -409,28 +401,6 @@ First, summarize the user's query in one sentence, then provide a simple summary
           </RadioGroup>
         </div>
       )}
-
-      {showOptions && (
-        <div className="bg-white border rounded-lg p-4 mb-4 shadow-lg">
-          <h3 className="font-bold text-lg mb-2">
-            {multiLang[language]?.introQuestionBox}
-          </h3>
-          <p className="text-sm text-gray-500 mb-4">
-            {multiLang[language]?.selectionRequired}
-          </p>
-          <RadioGroup onValueChange={handleOptionSelect}>
-            <div className="space-y-2">
-              {multiLang[language]?.categoriesArray.map((category, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <RadioGroupItem value={category} id={`category_${index}`} />
-                  <Label htmlFor={`category_${index}`}>{category}</Label>
-                </div>
-              ))}
-            </div>
-          </RadioGroup>
-        </div>
-      )}
-
       {jsonGenerated && (
         <div className="text-green-500 font-semibold mb-4">
           Your ticket has been raised with UUID:{' '}
@@ -472,13 +442,12 @@ First, summarize the user's query in one sentence, then provide a simple summary
               handleSubmit();
             }
           }}
-          disabled={showOptions || showLanguageOptions || jsonGenerated}
+          disabled={showLanguageOptions || jsonGenerated}
         />
         <Button
           onClick={handleSubmit}
           disabled={
             loading ||
-            showOptions ||
             showLanguageOptions ||
             jsonGenerated ||
             (!isTyping && !image)
