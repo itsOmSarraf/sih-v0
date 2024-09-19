@@ -6,7 +6,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { multiLang, availableDepartments } from '../../lib/constants';
+import {
+  multiLang,
+  availableDepartments,
+  imageUploadQuestion
+} from '../../lib/constants';
 import { motion } from 'framer-motion';
 import { NewComplaint } from 'app/actions/newComplaint';
 
@@ -146,9 +150,9 @@ export default function ChatInterface() {
             multiLang[language].categoriesArray[randomOptionIndex];
           setOption(randomOption);
 
-          // Enable Gemini and prompt for query
+          // Enable Gemini and prompt for query or image upload
           setGeminiEnabled(true);
-          addModelResponse(multiLang[language].askForQuery);
+          addModelResponse(multiLang[language].imageUploadQuestion);
         } else {
           addModelResponse('Invalid PNR. Please try again.');
         }
@@ -432,7 +436,11 @@ First, summarize the user's query in one sentence, then provide a simple summary
 
       <div className="flex items-center space-x-2">
         <Textarea
-          placeholder={multiLang[language]?.placeholderText}
+          placeholder={
+            pnrVerified
+              ? multiLang[language]?.askForQuery
+              : multiLang[language]?.placeholderText
+          }
           value={input}
           onChange={handleInputChange}
           className="flex-1"
